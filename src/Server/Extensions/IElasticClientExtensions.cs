@@ -26,11 +26,11 @@ namespace TheArchives.Server.Extensions
                     )
                 )
                 .Map<Content>(m => m
-                .Properties(ps => ps
+                    .Properties(ps => ps
                         .Text(s => s
                             .Name(n => n.Title)
                             .Analyzer("custom_analyzer")
-                            .Boost(2)
+                            .Boost(3)
                         )
                         .Text(s => s
                             .Name(n => n.Description)
@@ -47,12 +47,11 @@ namespace TheArchives.Server.Extensions
                             .Name(n => n.Brand)
                         )
                         .Object<Tag>(o => o
-                            .AutoMap()
                             .Name(n => n.Tags)
                             .Properties(eps => eps
                                 .Keyword(s => s
                                     .Name(e => e.Label)
-                                    .Boost(3)
+                                    .Boost(7)
                                 )
                                 .Number(s => s
                                     .Name(e => e.Count)

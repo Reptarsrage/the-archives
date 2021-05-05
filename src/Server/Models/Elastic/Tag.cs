@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TheArchives.Server.Models.Elastic
+﻿namespace TheArchives.Server.Models.Elastic
 {
     public class Tag
     {
@@ -9,7 +7,5 @@ namespace TheArchives.Server.Models.Elastic
         public string? Label { get; set; }
 
         public int Count { get; set; }
-
-        public IEnumerable<Content>? Content { get; set; }
     }
 }
