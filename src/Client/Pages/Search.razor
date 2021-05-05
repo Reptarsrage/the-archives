@@ -10,7 +10,7 @@
 @inject NavigationManager navManager
 
 <header class="header">
-   <div class="header-top">
+    <div class="header-top">
         <a class="nav-logo nav-link" href="/">
             <i class="las la-book" /> The Archives
         </a>
@@ -24,14 +24,16 @@
         <a class="nav-logo nav-link" href="/">
             <i class="las la-book" /> The Archives
         </a>
-        
+
         <form class="search" role="search" @onsubmit="Submit">
             <div class="search-wrapper" @onclick="Focus">
                 <span class="search-icon"><i class="la la-search" /></span>
-            
-                <input class="search-input" @bind="searchValue" @ref="searchInput" maxlength="2048" name="search" type="search" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox" spellcheck="false" title="Search" />
 
-                @if (fetched) 
+                <input class="search-input" @bind="searchValue" @ref="searchInput" maxlength="2048" name="search"
+                    type="search" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox"
+                    spellcheck="false" title="Search" />
+
+                @if (fetched)
                 {
                     <span class="search-stats">
                         @total.ToString("N0") results in @(timeTaken.ToString("N0"))ms
@@ -55,81 +57,83 @@
     </div>
 </header>
 
-<main class="main">
-@if (!fetched)
+@if (!fetched || fetching)
 {
-    <div>
+    <aside class="loader-container">
         <Loader />
-    </div>
+    </aside>
 }
 else
 {
-    <div class="results">
-        @* Result items list *@
-        <ul class="results-items-list">
-            @foreach (var result in results)
-            {
-                <li class="item">
-                    <div>
-                        <a href="/reader/@result.ContentId">
-                            <h5 class="item-title">@result.Title</h5>
-                        </a>
-                    </div>
-                    <div class="item-author">
-                        <span class="item-subheader">
-                            Posted to <em>@result.Brand</em> by <em>@result.Author</em>
-                        </span>
-                    </div>
-                    <div>
-                        <p class="item-description">@result.Description</p>
+    <main class="main">
+        <div class="results">
+            @* Result items list *@
+            <ul class="results-items-list">
+                @foreach (var result in results)
+                {
+                    <li class="item">
                         <div>
-                            @foreach (var tag in result.Tags)
-                            {
-                                <span class="tag"><i class="las la-tag"></i> @tag.Label</span>
-                            }
+                            <a href="/reader/@result.ContentId">
+                                <h5 class="item-title">@result.Title</h5>
+                            </a>
                         </div>
-                    </div>
-                </li>
-            }
-        </ul>
-    </div>
+                        <div class="item-author">
+                            <span class="item-subheader">
+                                Posted to <em>@result.Brand</em> by <em>@result.Author</em>
+                            </span>
+                        </div>
+                        <div>
+                            <p class="item-description">@result.Description</p>
+                            <div>
+                                @foreach (var tag in result.Tags)
+                                {
+                                    <span class="tag"><i class="las la-tag"></i> @tag.Label</span>
+                                }
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
 
-    @* Pagination *@
-    <div class="pager">
-        @if (Page > 5) 
-        {
-            <a href="/Search/@queryString" class="page"><i class="la la-angle-double-left"></i></a>
-        }
-        
-        @if (Page > 0) 
-        {
-            <a href="/Search/@(Page - 1)/@queryString" class="page"><i class="la la-angle-left"></i></a>
-        }
-        
-        @{
-            var elasticLimit = 10_000;
-            var totalPossible = Math.Min(elasticLimit, total);
-            var maxPage = (int)Math.Ceiling(totalPossible / (decimal)PageSize);
-            var minPage = Math.Max(1, Math.Min(maxPage - 9, Page - 4));
-        }
-        
-        @for(var i = minPage; i < Math.Min(maxPage + 1, minPage + 10); i++)
-        {
-            if (Page + 1 == i) {
-                 <span class="page active">@i</span>
-            } else 
+        @* Pagination *@
+        <div class="pager">
+            @if (Page > 5)
             {
-                <a href="/Search/@(i - 1)/@queryString" class="page@(Page - 1 == i ? " active" : string.Empty)">@i</a>
+                <a href="/Search/@queryString" class="page"><i class="la la-angle-double-left"></i></a>
             }
-        }
 
-        @if (Page < maxPage - 1) 
-        {
-            <a href="/Search/@(Page + 1)/@queryString" class="page"><i class="la la-angle-right"></i></a>
-        }
-    </div>
+            @if (Page > 0)
+            {
+                <a href="/Search/@(Page - 1)/@queryString" class="page"><i class="la la-angle-left"></i></a>
+            }
+
+            @{
+                var elasticLimit = 10_000;
+                var totalPossible = Math.Min(elasticLimit, total);
+                var maxPage = (int)Math.Ceiling(totalPossible / (decimal)PageSize);
+                var minPage = Math.Max(1, Math.Min(maxPage - 9, Page - 4));
+            }
+
+            @for (var i = minPage; i < Math.Min(maxPage + 1, minPage + 10); i++)
+            {
+                if (Page + 1 == i)
+                {
+                    <span class="page active">@i</span>
+                }
+                else
+                {
+                    <a href="/Search/@(i - 1)/@queryString" class="page@(Page - 1 == i ? " active" : string.Empty)">@i</a>
+                }
+            }
+
+            @if (Page < maxPage - 1)
+            {
+                <a href="/Search/@(Page + 1)/@queryString" class="page"><i class="la la-angle-right"></i></a>
+            }
+        </div>
+    </main>
 }
-</main>
 
 @code {
     [Parameter]
@@ -146,15 +150,15 @@ else
     private string queryString { get; set; } = string.Empty;
     private string searchValue { get; set; } = string.Empty;
     private bool showSearchClear => !string.IsNullOrEmpty(searchValue);
-    
+
     protected override async Task OnParametersSetAsync()
     {
         var uri = navManager.ToAbsoluteUri(navManager.Uri);
         queryString = uri.Query;
         searchValue = string.Empty;
         if (QueryHelpers.ParseQuery(queryString).TryGetValue(nameof(SearchRequest.Search), out var search))
-        {  
-            searchValue = search;  
+        {
+            searchValue = search;
         }
 
         await GetSearch();
@@ -176,7 +180,7 @@ else
     private async Task Focus()
     {
         await searchInput.FocusAsync();
-    } 
+    }
 
     private async Task GetSearch()
     {
@@ -185,14 +189,15 @@ else
             fetching = true;
 
             // Make request
-            var parameters = new Dictionary<string, string> {
+            var parameters = new Dictionary<string, string>
+            {
                 [nameof(SearchRequest.Search)] = searchValue,
                 [nameof(SearchRequest.Page)] = Page.ToString(),
                 [nameof(SearchRequest.PageSize)] = PageSize.ToString(),
             };
 
             var response = await Http.GetFromJsonAsync<SearchResponse>(
-                QueryHelpers.AddQueryString("/api/search", parameters));
+            QueryHelpers.AddQueryString("/api/search", parameters));
 
             // Parse response
             if (response != null)
