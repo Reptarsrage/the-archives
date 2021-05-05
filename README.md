@@ -156,12 +156,13 @@ To configure the necessary environment variables run `sudo systemctl edit kestre
 [Service]
 Environment=ASPNETCORE_ENVIRONMENT=Production
 Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
-Environment=Auth0__Domain=dev-60pojokn.us.auth0.com
-Environment=Auth0__ClientId=sV0VLWEy2jlXcmjmf6H5lzE6Pl4sDYUU
-Environment=Auth0__ClientSecret=<Client Secret>
-Environment="ConnectionStrings__Default=Data Source=Data/Database.sqlite"
+Environment=Auth0__Audience=https://archives.dyndns.org
+Environment=Auth0__Authority=https://dev-60pojokn.us.auth0.com
+Environment=Auth0__ApiIdentifier=https://archives.dyndns.org
+Environment=Auth0__ClientId=gZp6JDlXFlcgR4HGvVA5E0h9kFY8eIhy
+Environment="ConnectionStrings__Default=Data Source=Database.sqlite"
 Environment=Elastic__Uri=http://localhost:9200/
-Environment=Elastic__DefaultIndex=contentexplorer
+Environment=Elastic__DefaultIndex=thearchives
 Environment=Content__BaseDir=/home/pi/content/
 Environment=LogDirectory=/home/pi/logs
 ```
