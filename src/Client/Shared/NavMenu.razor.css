@@ -1,0 +1,13 @@
+.nav-link {
+    color: #222;
+    text-decoration: none;
+    font-size: 32px;
+    height: 38px;
+    display: inline-block;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    color: var(--primary-color);
+    text-decoration: none;
+}

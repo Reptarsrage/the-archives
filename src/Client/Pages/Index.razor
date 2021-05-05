@@ -1,0 +1,57 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using TheArchives.Shared
+@using Microsoft.AspNetCore.WebUtilities
+@attribute [Authorize]
+@inject NavigationManager navManager
+
+<header class="header-top">
+    <span class="header-auth">
+        <NavMenu />
+    </span>
+</header>
+
+<main class="main">
+    <div class="hero row">
+        <h1><i class="la la-book"></i> The Archives</h1>
+    </div>
+
+    <form class="search row" role="search" @onsubmit="Submit">
+        <div class="search-wrapper" @onclick="Focus">
+            <span class="search-icon"><i class="la la-search" /></span>
+            
+            <input class="search-input" @bind="searchValue"  @ref="searchInput" maxlength="2048" name="search" type="search" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox" spellcheck="false" title="Search" />
+
+            @if (showSearchClear)
+            {
+                <button type="button" class="search-clear" @onclick="Clear">
+                    <i class="la la-times" />
+                </button>
+            }
+        </div>
+
+        <input type="submit" value="Search" class="search-button" />
+    </form>
+</main>
+
+@code {
+    private ElementReference searchInput { get; set; }
+    private string searchValue { get; set; } = string.Empty;
+    private bool showSearchClear => !string.IsNullOrEmpty(searchValue);
+
+    private async Task Clear()
+    {
+        searchValue = string.Empty;
+        await Focus();
+    }
+
+    private async Task Focus()
+    {
+        await searchInput.FocusAsync();
+    } 
+    
+    private void Submit()
+    {
+        navManager.NavigateTo(QueryHelpers.AddQueryString("/search", nameof(SearchRequest.Search), searchValue));
+    }
+}

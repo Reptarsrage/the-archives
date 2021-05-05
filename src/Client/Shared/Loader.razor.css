@@ -1,0 +1,31 @@
+.loader-border {
+  width: 100px;
+  height: 100px;
+  background: transparent;
+  border: 2px solid rgba(51, 195, 240, 0.2);
+  border-radius: 50%;
+  border-left-color: var(--primary-color);
+  animation: rotate-s-loader 1s linear infinite;
+}
+
+.loader {
+  position: relative;
+}
+
+.loader-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+}
+
+@keyframes rotate-s-loader {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

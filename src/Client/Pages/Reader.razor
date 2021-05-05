@@ -1,0 +1,142 @@
+﻿@page "/reader/{ContentId:int}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Collections.Generic
+@using System.Text.RegularExpressions
+@using TheArchives.Shared
+@attribute [Authorize]
+@implements IAsyncDisposable
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<main class="reader" @ref="ReaderRef" @onclick="OnReaderClick"> 
+    <div class="reader-hidden" @ref="HiddenRef">
+        <h1>@Content?.Title</h1>
+        
+        @foreach (var paragraph in Paragraphs ?? Enumerable.Empty<string>())
+        {
+            <p>@paragraph</p>
+        }
+    </div>
+
+    <div
+      class="pager"
+      style="transform: translate(-@(PageWidth * Page)px);width: @(PageCount * PageWidth)px;height: @(ReaderHeight)px;column-count: @PageCount;">
+        <h1>@Content?.Title</h1>
+
+        @foreach (var paragraph in Paragraphs ?? Enumerable.Empty<string>())
+        {
+            <p>@paragraph</p>
+        }
+    </div>
+</main>
+
+@code {
+    [Parameter]
+    public int ContentId { get; set; }
+
+    private ElementReference HiddenRef { get; set; }
+    private ElementReference ReaderRef { get; set; }
+
+    private int Page { get; set; } = 0;
+    private int PageCount { get; set; } = 5;
+    private decimal PageHeight { get; set; } = 4870;
+    private decimal PageWidth { get; set; } = 1154;
+    private decimal ReaderHeight { get; set; } = 977;
+    private string Text { get; set; } = "Loading...";
+    private IEnumerable<string>? Paragraphs { get; set; }
+
+    private Content? Content { get; set; }
+
+    private static Action<decimal, decimal, decimal, decimal>? HiddenRefResizedAction;
+    private static Action<decimal, decimal, decimal, decimal>? ReaderRefResizedAction;
+
+    public async ValueTask DisposeAsync()
+    {
+        await Task.WhenAll(
+            JS.InvokeVoidAsync("interopFunctions.unObserveHiddenRefResized", HiddenRef).AsTask(),
+            JS.InvokeVoidAsync("interopFunctions.unObserveReaderRefResized", ReaderRef).AsTask());
+    }
+
+    [JSInvokable]
+    public static void HiddenRefResized(decimal height, decimal width, decimal left, decimal top)
+    {
+        HiddenRefResizedAction?.Invoke(height, width, left, top);
+    }
+
+    [JSInvokable]
+    public static void ReaderRefResized(decimal height, decimal width, decimal left, decimal top)
+    {
+        ReaderRefResizedAction?.Invoke(height, width, left, top);
+    }
+
+    private void ReaderRefResizedActionCallback(decimal height, decimal width, decimal left, decimal top)
+    {
+        ReaderHeight = height == 0 ? 1 : height;
+        PageCount = (int)Math.Floor(PageHeight / ReaderHeight) + 1;
+        StateHasChanged();
+    }
+
+    private void HiddenRefResizedActionCallback(decimal height, decimal width, decimal left, decimal top)
+    {
+        var gutterX = left * 2;
+        var gutterY = top * 2;
+        var totalHeight = height + gutterY;
+        var totalWidth = width + gutterX;
+        
+        PageHeight = totalHeight;
+        PageWidth = totalWidth;
+        ReaderHeight = ReaderHeight == 0 ? 1 : ReaderHeight;
+        PageCount = (int)Math.Floor(PageHeight / ReaderHeight) + 1;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Paragraphs = Enumerable.Empty<string>();
+        HiddenRefResizedAction = HiddenRefResizedActionCallback;
+        ReaderRefResizedAction = ReaderRefResizedActionCallback;
+        await GetContent();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            await JS.InvokeVoidAsync("interopFunctions.observeHiddenRefResized", HiddenRef);
+            await JS.InvokeVoidAsync("interopFunctions.observeReaderRefResized", ReaderRef);
+        }
+    }
+
+    private async Task OnReaderClick(MouseEventArgs e) {
+        var result = await JS.InvokeAsync<BoundingClientRect>("interopFunctions.getBoundingClientRect", ReaderRef);
+        var percentX = e.ClientX / result.Width;
+
+        if (percentX > 0.1 && Page + 1 < PageCount) {
+            Page++;
+        } else if (percentX <= 0.1 && Page - 1 >= 0) {
+            Page--;
+        }
+    }
+
+    private async Task GetContent()
+    {
+        try
+        {
+            // Make requests
+            var getTextTaask = Http.GetStringAsync($"/api/content/text/{ContentId}");
+            var getContentTask = Http.GetFromJsonAsync<Content>($"/api/content/{ContentId}");
+            await Task.WhenAll(getTextTaask, getContentTask);
+
+            Text = getTextTaask.Result;
+            Content = getContentTask.Result;
+            
+            // Parse response
+            var noConsecutive = new Regex(@"(.)\1\1\1\1\1+").Replace(Text, string.Empty); // replace consecutive identical characters in text
+            Paragraphs = new Regex(@"\n\n").Split(noConsecutive).Where((s) => s.Length > 0); // split into paragraphs
+            Page = 0;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}
