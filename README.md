@@ -3,7 +3,8 @@
 Author: reptarsrage
 Date: 08/28/2020  
 
-![.NET](https://github.com/Reptarsrage/TheArchives/workflows/.NET/badge.svg)
+![Test](https://github.com/Reptarsrage/the-archives/workflows/Test/badge.svg)
+![Deploy](https://github.com/Reptarsrage/the-archives/workflows/Deploy/badge.svg)
 
 An experiment with content aggregation and UI.
 
