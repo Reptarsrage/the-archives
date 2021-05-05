@@ -110,26 +110,24 @@ sudo nginx -s reload
 We will create a systemd service.
 
 ```
-sudoedit /etc/systemd/system/kestrel-empowerapp.service
+sudoedit /etc/systemd/system/kestrel-thearchives.service
 ```
 
 With the following content:
 
 ```
 [Unit]
-Description=.NET 5 App - The Archives
+Description=.NET 6 App - The Archives
 
 [Service]
-WorkingDirectory=/home/pi/publish
-ExecStart=/home/pi/dotnet-arm32/dotnet /home/pi/publish/TheArchives.dll
+WorkingDirectory=/var/www/the-archives/publish
+ExecStart=/home/pi/dotnet-arm32/dotnet /var/www/the-archives/publish/TheArchives.Server.dll
 Restart=always
 # Restart service after 10 seconds if the dotnet service crashes:
 RestartSec=10
 KillSignal=SIGINT
 SyslogIdentifier=dotnet-the-archives
 User=pi
-Environment=ASPNETCORE_ENVIRONMENT=Production
-Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
 
 [Install]
 WantedBy=multi-user.target
@@ -139,9 +137,9 @@ Note, we can only use absolute path in systemd configuation.
 Register and start the service:
 
 ```
-sudo systemctl enable kestrel-empowerapp.service
-sudo systemctl start kestrel-empowerapp.service
-sudo systemctl status kestrel-empowerapp.service
+sudo systemctl enable kestrel-thearchives.service
+sudo systemctl start kestrel-thearchives.service
+sudo systemctl status kestrel-thearchives.service
 ```
 
 Or if the service already exists run:
@@ -150,21 +148,19 @@ Or if the service already exists run:
 sudo systemctl daemon-reload
 ```
 
-To configure the necessary environment variables run `sudo systemctl edit kestrel-empowerapp` and add the following overrides:
+To configure the necessary environment variables run `sudo systemctl edit kestrel-thearchives` and add the following overrides:
 
 ```
 [Service]
 Environment=ASPNETCORE_ENVIRONMENT=Production
 Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
-Environment=Auth0__Audience=https://archives.dyndns.org
 Environment=Auth0__Authority=https://dev-60pojokn.us.auth0.com
 Environment=Auth0__ApiIdentifier=https://archives.dyndns.org
-Environment=Auth0__ClientId=gZp6JDlXFlcgR4HGvVA5E0h9kFY8eIhy
-Environment="ConnectionStrings__Default=Data Source=Database.sqlite"
+Environment="ConnectionStrings__Default=Data Source=/var/www/the-archives/Database.sqlite"
 Environment=Elastic__Uri=http://localhost:9200/
 Environment=Elastic__DefaultIndex=thearchives
-Environment=Content__BaseDir=/home/pi/content/
-Environment=LogDirectory=/home/pi/logs
+Environment=Content__BaseDir=/var/www/the-archives/content/
+Environment=LogDirectory=/var/www/the-archives/logs/
 ```
 
 > NOTE: If : cannot be used in environment variables in your system, replace : with __ (double underscore). Any 
