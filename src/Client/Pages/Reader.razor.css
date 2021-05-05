@@ -39,10 +39,8 @@
   left: 0;
 }
 
-.loader-container {
-  transition-delay: 100ms;
-  position: absolute;
-  left: 50%;
+::deep aside {
   top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
 }

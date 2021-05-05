@@ -1,0 +1,65 @@
+<form class="search" role="search" @onsubmit="OnSubmitCallback">
+    <div class="search-wrapper" @onclick="Focus">
+        <span class="search-icon"><i class="la la-search" /></span>
+
+        <input class="search-input" value="@Value" @oninput="OnInput" @ref="searchInput" maxlength="2048" name="search"
+            type="search" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox"
+            spellcheck="false" title="Search" />
+
+        @if (ShowStats)
+        {
+            <span class="search-stats">
+                @Total.ToString("N0") results in @(TimeTaken.ToString("N0"))ms
+            </span>
+        }
+
+        @if (!string.IsNullOrEmpty(Value))
+        {
+            <button type="button" class="search-clear" @onclick="Clear">
+                <i class="la la-times" />
+            </button>
+        }
+    </div>
+
+    <input type="submit" value="Search" class="search-button" />
+</form>
+
+@code {
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool ShowStats { get; set; }
+
+    [Parameter]
+    public long Total { get; set; }
+
+    [Parameter]
+    public long TimeTaken { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<EventArgs> OnSubmitCallback { get; set; }
+
+    private ElementReference searchInput { get; set; }
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        Value = e?.Value?.ToString() ?? string.Empty;
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    private async Task Clear()
+    {
+        Value = string.Empty;
+        await ValueChanged.InvokeAsync(Value);
+        await Focus();
+    }
+
+    private async Task Focus()
+    {
+        await searchInput.FocusAsync();
+    }
+}
