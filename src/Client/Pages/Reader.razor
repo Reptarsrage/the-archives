@@ -19,8 +19,12 @@
         }
     </div>
 
+    <aside class="loader-container fade @(loading ? "shown" : "hidden")">
+        <Loader />
+    </aside>
+
     <div
-      class="pager"
+      class="pager fade @(loading ? "hidden" : "shown")"
       style="transform: translate(-@(PageWidth * Page)px);width: @(PageCount * PageWidth)px;height: @(ReaderHeight)px;column-count: @PageCount;">
         <h1>@Content?.Title</h1>
 
@@ -39,11 +43,11 @@
     private ElementReference ReaderRef { get; set; }
 
     private int Page { get; set; } = 0;
-    private int PageCount { get; set; } = 5;
-    private decimal PageHeight { get; set; } = 4870;
-    private decimal PageWidth { get; set; } = 1154;
-    private decimal ReaderHeight { get; set; } = 977;
-    private string Text { get; set; } = "Loading...";
+    private int PageCount { get; set; } = 0;
+    private decimal PageHeight { get; set; } = 0;
+    private decimal PageWidth { get; set; } = 0;
+    private decimal ReaderHeight { get; set; } = 0;
+    private string Text { get; set; } = string.Empty;
     private IEnumerable<string>? Paragraphs { get; set; }
 
     private Content? Content { get; set; }
@@ -51,9 +55,12 @@
     private static Action<decimal, decimal, decimal, decimal>? HiddenRefResizedAction;
     private static Action<decimal, decimal, decimal, decimal>? ReaderRefResizedAction;
 
+    private bool loading { get; set; }
+
     public async ValueTask DisposeAsync()
     {
         await Task.WhenAll(
+            JS.InvokeVoidAsync("interopFunctions.disposeBody").AsTask(),
             JS.InvokeVoidAsync("interopFunctions.unObserveHiddenRefResized", HiddenRef).AsTask(),
             JS.InvokeVoidAsync("interopFunctions.unObserveReaderRefResized", ReaderRef).AsTask());
     }
@@ -93,6 +100,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        loading = true;
         Paragraphs = Enumerable.Empty<string>();
         HiddenRefResizedAction = HiddenRefResizedActionCallback;
         ReaderRefResizedAction = ReaderRefResizedActionCallback;
@@ -101,6 +109,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
+            await JS.InvokeVoidAsync("interopFunctions.initializeBody");
             await JS.InvokeVoidAsync("interopFunctions.observeHiddenRefResized", HiddenRef);
             await JS.InvokeVoidAsync("interopFunctions.observeReaderRefResized", ReaderRef);
         }
@@ -133,6 +142,7 @@
             var noConsecutive = new Regex(@"(.)\1\1\1\1\1+").Replace(Text, string.Empty); // replace consecutive identical characters in text
             Paragraphs = new Regex(@"\n\n").Split(noConsecutive).Where((s) => s.Length > 0); // split into paragraphs
             Page = 0;
+            loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {

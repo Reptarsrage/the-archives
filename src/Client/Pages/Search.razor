@@ -57,83 +57,80 @@
     </div>
 </header>
 
-@if (!fetched || fetching)
-{
-    <aside class="loader-container">
+<main class="main">
+    @{var loading = !fetched || fetching; }
+    <aside class="loader-container fade @(loading ? "shown" : "hidden")">
         <Loader />
     </aside>
-}
-else
-{
-    <main class="main">
-        <div class="results">
-            @* Result items list *@
-            <ul class="results-items-list">
-                @foreach (var result in results)
-                {
-                    <li class="item">
+    
+    <div class="results fade @(loading ? "hidden" : "shown")">
+        @* Result items list *@
+        <ul class="results-items-list">
+            @foreach (var result in results)
+            {
+                <li class="item">
+                    <div>
+                        <a href="/reader/@result.ContentId">
+                            <h5 class="item-title">@result.Title</h5>
+                        </a>
+                    </div>
+                    <div class="item-author">
+                        <span class="item-subheader">
+                            Posted to <em>@result.Brand</em> by <em>@result.Author</em>
+                        </span>
+                    </div>
+                    <div>
+                        <p class="item-description">@result.Description</p>
                         <div>
-                            <a href="/reader/@result.ContentId">
-                                <h5 class="item-title">@result.Title</h5>
-                            </a>
+                            @foreach (var tag in result.Tags)
+                            {
+                                <span class="tag"><i class="las la-tag"></i> @tag.Label</span>
+                            }
                         </div>
-                        <div class="item-author">
-                            <span class="item-subheader">
-                                Posted to <em>@result.Brand</em> by <em>@result.Author</em>
-                            </span>
-                        </div>
-                        <div>
-                            <p class="item-description">@result.Description</p>
-                            <div>
-                                @foreach (var tag in result.Tags)
-                                {
-                                    <span class="tag"><i class="las la-tag"></i> @tag.Label</span>
-                                }
-                            </div>
-                        </div>
-                    </li>
-                }
-            </ul>
-        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
 
-        @* Pagination *@
-        <div class="pager">
-            @if (Page > 5)
+    @* Pagination *@
+    <div class="pager">
+        @if (Page > 5)
+        {
+            <a href="/Search/@queryString" class="page"><i class="la la-angle-double-left"></i></a>
+        }
+
+        @if (Page > 0)
+        {
+            <a href="/Search/@(Page - 1)/@queryString" class="page"><i class="la la-angle-left"></i></a>
+        }
+
+        @{
+            var elasticLimit = 10_000;
+            var totalPossible = Math.Min(elasticLimit, total);
+            var maxPage = (int)Math.Ceiling(totalPossible / (decimal)PageSize);
+            var minPage = Math.Max(1, Math.Min(maxPage - 9, Page - 4));
+        }
+
+        @for (var i = minPage; i < Math.Min(maxPage + 1, minPage + 10); i++)
+        {
+            if (Page + 1 == i)
             {
-                <a href="/Search/@queryString" class="page"><i class="la la-angle-double-left"></i></a>
+                <span class="page active">@i</span>
             }
-
-            @if (Page > 0)
+            else
             {
-                <a href="/Search/@(Page - 1)/@queryString" class="page"><i class="la la-angle-left"></i></a>
+                <a href="/Search/@(i - 1)/@queryString" class="page@(Page - 1 == i ? " active" : string.Empty)">@i</a>
             }
+        }
 
-            @{
-                var elasticLimit = 10_000;
-                var totalPossible = Math.Min(elasticLimit, total);
-                var maxPage = (int)Math.Ceiling(totalPossible / (decimal)PageSize);
-                var minPage = Math.Max(1, Math.Min(maxPage - 9, Page - 4));
-            }
+        @if (Page < maxPage - 1)
+        {
+            <a href="/Search/@(Page + 1)/@queryString" class="page"><i class="la la-angle-right"></i></a>
+        }
+    </div>
+</main>
 
-            @for (var i = minPage; i < Math.Min(maxPage + 1, minPage + 10); i++)
-            {
-                if (Page + 1 == i)
-                {
-                    <span class="page active">@i</span>
-                }
-                else
-                {
-                    <a href="/Search/@(i - 1)/@queryString" class="page@(Page - 1 == i ? " active" : string.Empty)">@i</a>
-                }
-            }
-
-            @if (Page < maxPage - 1)
-            {
-                <a href="/Search/@(Page + 1)/@queryString" class="page"><i class="la la-angle-right"></i></a>
-            }
-        </div>
-    </main>
-}
 
 @code {
     [Parameter]

@@ -10,6 +10,7 @@ const observeReaderRefResizedCallback = (event) => {
   DotNet.invokeMethodAsync('TheArchives.Client', 'ReaderRefResized', height, width, left, top)
 }
 
+const bodyClass = 'overflow-h'
 const hiddenRefResizeObserver = new ResizeObserver(observeHiddenRefResizedCallback)
 const readerRefResizeObserver = new ResizeObserver(observeReaderRefResizedCallback)
 
@@ -27,5 +28,15 @@ Object.assign(window.interopFunctions, {
   },
   unObserveReaderRefResized: (element) => {
     readerRefResizeObserver.unobserve(element)
+  },
+  initializeBody: () => {
+    if (!document.body.classList.contains(bodyClass)) {
+      document.body.classList.add(bodyClass)
+    }
+  },
+  disposeBody: () => {
+    if (document.body.classList.contains(bodyClass)) {
+      document.body.classList.remove(bodyClass)
+    }
   },
 })
