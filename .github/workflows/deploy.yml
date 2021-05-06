@@ -37,3 +37,6 @@ jobs:
   
       - name: Restart Kestrel
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo systemctl restart ${{ secrets.KESTREL_APP_NAME }}"
+
+      - name: Remove Swap Dir
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "'rm' -rf /var/www/the-archives/publish-old"
