@@ -65,15 +65,12 @@
 
     public async ValueTask DisposeAsync()
     {
-        await DisposeAsyncCore();
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual async ValueTask DisposeAsyncCore()
-    {
-        await JS.InvokeVoidAsync("interopFunctions.disposeBody").ConfigureAwait(false);
-        await JS.InvokeVoidAsync("interopFunctions.unObserveHiddenRefResized", hiddenRef).ConfigureAwait(false);
-        await JS.InvokeVoidAsync("interopFunctions.unObserveReaderRefResized", readerRef).ConfigureAwait(false);
+        // If we don't run them all at once, we risk the element references being disposed in the meantime
+        await Task.WhenAll(
+            JS.InvokeVoidAsync("interopFunctions.unObserveHiddenRefResized", hiddenRef).AsTask(),
+            JS.InvokeVoidAsync("interopFunctions.unObserveReaderRefResized", readerRef).AsTask(),
+            JS.InvokeVoidAsync("interopFunctions.disposeBody").AsTask()
+        ).ConfigureAwait(false);
     }
 
     [JSInvokable]
