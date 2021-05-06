@@ -30,7 +30,7 @@ jobs:
         run: dotnet publish ./src/Server/TheArchives.Server.csproj -o ./publish -c Release
 
       - name: Deploy
-        run: rsync -avz ./publish/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/the-archives/
+        run: rsync -avuz ./publish/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/the-archives/publish/
 
       - name: Restart Kestrel
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo systemctl restart ${{ secrets.KESTREL_APP_NAME }}"
