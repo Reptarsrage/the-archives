@@ -23,7 +23,7 @@
 
     <div
         class="pager fade @(loading ? "hidden" : "shown")"
-        style="transform: translate(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;column-count: @pageCount;">
+        style="transform: translateX(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;columns: @pageCount @(columnWidth)px;height: @(readerHeight)px">
             <h1>@content?.Title</h1>
 
             @foreach (var paragraph in paragraphs ?? Enumerable.Empty<string>())
@@ -58,6 +58,8 @@
     private double pageWidth { get; set; } = 0;
 
     private double readerHeight { get; set; } = 0;
+
+    private double columnWidth { get; set; } = 0;
 
     private string text { get; set; } = string.Empty;
 
@@ -119,6 +121,7 @@
         var gutterY = 35;
         readerHeight = Math.Max(1, height - gutterY);
         pageCount = (int)Math.Floor(pageHeight / readerHeight) + 1;
+        columnWidth = width;
         StateHasChanged();
     }
 
@@ -127,6 +130,7 @@
         var totalHeight = height - 35; // top + bottom padding on pager
         pageHeight = height;
         pageWidth = width + 2 * left;
+        columnWidth = width;
         pageCount = (int)Math.Floor(totalHeight / Math.Max(1, readerHeight)) + 1;
         StateHasChanged();
     }
