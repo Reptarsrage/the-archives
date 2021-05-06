@@ -178,6 +178,7 @@
     protected override async Task OnInitializedAsync()
     {
         loading = true;
+        readerHeight = await JS.InvokeAsync<double>("interopFunctions.getHeight");
         paragraphs = Enumerable.Empty<string>();
         HiddenRefResizedAction = HiddenRefResizedActionCallback;
         ReaderRefResizedAction = ReaderRefResizedActionCallback;

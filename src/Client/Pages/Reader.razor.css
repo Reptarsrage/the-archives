@@ -34,7 +34,7 @@
 .reader-hidden,
 .pager {
   position: absolute;
-  padding: 0.5rem;
+  padding: 8px 8px 16px 8px;
   top: 0;
   left: 0;
 }
