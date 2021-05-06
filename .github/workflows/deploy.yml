@@ -30,7 +30,10 @@ jobs:
         run: dotnet publish ./src/Server/TheArchives.Server.csproj -o ./publish -c Release
 
       - name: Deploy
-        run: rsync -avuz ./publish/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/the-archives/publish/
-
+        run: rsync -avuz ./publish/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/the-archives/publish-swap/
+  
+      - name: Swap
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "'mv' /var/www/the-archives/publish /var/www/the-archives/publish-old && 'mv' /var/www/the-archives/publish-swap /var/www/the-archives/publish"
+  
       - name: Restart Kestrel
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo systemctl restart ${{ secrets.KESTREL_APP_NAME }}"
