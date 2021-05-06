@@ -21,20 +21,16 @@
 
     <Loader Loading="loading" />
 
-    <Swipe OnSwipeLeft="GoNext" OnSwipeRight="GoPrev">
-        <Children>
-            <div
-                class="pager fade @(loading ? "hidden" : "shown")"
-                style="transform: translate(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;height: @(readerHeight)px;column-count: @pageCount;">
-                    <h1>@content?.Title</h1>
+    <div
+        class="pager fade @(loading ? "hidden" : "shown")"
+        style="transform: translate(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;height: @(readerHeight)px;column-count: @pageCount;">
+            <h1>@content?.Title</h1>
 
-                    @foreach (var paragraph in paragraphs ?? Enumerable.Empty<string>())
-                    {
-                        <p>@paragraph</p>
-                    }
-            </div>
-        </Children>
-    </Swipe>
+            @foreach (var paragraph in paragraphs ?? Enumerable.Empty<string>())
+            {
+                <p>@paragraph</p>
+            }
+    </div>
 </main>
 
 @code {
@@ -49,11 +45,11 @@
 
     private int pageCount { get; set; } = 0;
 
-    private decimal pageHeight { get; set; } = 0;
+    private double pageHeight { get; set; } = 0;
 
-    private decimal pageWidth { get; set; } = 0;
+    private double pageWidth { get; set; } = 0;
 
-    private decimal readerHeight { get; set; } = 0;
+    private double readerHeight { get; set; } = 0;
 
     private string text { get; set; } = string.Empty;
 
@@ -61,11 +57,19 @@
 
     private Content? content { get; set; }
 
-    private static Action<decimal, decimal, decimal, decimal>? HiddenRefResizedAction;
+    private static Action<double, double, double, double>? HiddenRefResizedAction;
 
-    private static Action<decimal, decimal, decimal, decimal>? ReaderRefResizedAction;
+    private static Action<double, double, double, double>? ReaderRefResizedAction;
+
+    private static Action<double, double>? ReaderRefTouchStartAction;
+
+    private static Action<double, double>? ReaderRefTouchMoveAction;
 
     private bool loading { get; set; }
+
+    private double xDown { get; set; } = double.MinValue;
+
+    private double yDown { get; set; } = double.MinValue;
 
     public async ValueTask DisposeAsync()
     {
@@ -73,30 +77,43 @@
         await Task.WhenAll(
             JS.InvokeVoidAsync("interopFunctions.unObserveHiddenRefResized", hiddenRef).AsTask(),
             JS.InvokeVoidAsync("interopFunctions.unObserveReaderRefResized", readerRef).AsTask(),
-            JS.InvokeVoidAsync("interopFunctions.disposeBody").AsTask()
+            JS.InvokeVoidAsync("interopFunctions.disposeBody").AsTask(),
+            JS.InvokeVoidAsync("interopFunctions.unlistenToSwipes").AsTask()
         ).ConfigureAwait(false);
     }
 
     [JSInvokable]
-    public static void HiddenRefResized(decimal height, decimal width, decimal left, decimal top)
+    public static void HiddenRefResized(double height, double width, double left, double top)
     {
         HiddenRefResizedAction?.Invoke(height, width, left, top);
     }
 
     [JSInvokable]
-    public static void ReaderRefResized(decimal height, decimal width, decimal left, decimal top)
+    public static void ReaderRefResized(double height, double width, double left, double top)
     {
         ReaderRefResizedAction?.Invoke(height, width, left, top);
     }
 
-    private void ReaderRefResizedActionCallback(decimal height, decimal width, decimal left, decimal top)
+    [JSInvokable]
+    public static void ReaderRefTouchStart(double clientX, double clientY)
+    {
+        ReaderRefTouchStartAction?.Invoke(clientX, clientY);
+    }
+
+    [JSInvokable]
+    public static void ReaderRefTouchMove(double clientX, double clientY)
+    {
+        ReaderRefTouchMoveAction?.Invoke(clientX, clientY);
+    }
+
+    private void ReaderRefResizedActionCallback(double height, double width, double left, double top)
     {
         readerHeight = height == 0 ? 1 : height;
         pageCount = (int)Math.Floor(pageHeight / readerHeight) + 1;
         StateHasChanged();
     }
 
-    private void HiddenRefResizedActionCallback(decimal height, decimal width, decimal left, decimal top)
+    private void HiddenRefResizedActionCallback(double height, double width, double left, double top)
     {
         var gutterX = left * 2;
         var gutterY = top * 2;
@@ -110,18 +127,69 @@
         StateHasChanged();
     }
 
+    private void ReaderRefTouchStartCallback(double clientX, double clientY)
+    {
+        xDown = clientX;
+        yDown = clientY;
+    }
+
+    private void ReaderRefTouchMoveCallback(double clientX, double clientY)
+    {
+        if (xDown == double.MinValue || yDown == double.MinValue)
+        {
+            return;
+        }
+
+        var xUp = clientX;
+        var yUp = clientY;
+
+        var xDiff = xDown - xUp;
+        var yDiff = yDown - yUp;
+
+        if (Math.Abs(xDiff) > Math.Abs(yDiff))
+        {
+            if (xDiff > 0)
+            {
+                GoNext();
+                StateHasChanged();
+            }
+            else
+            {
+                GoPrev();
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            if (yDiff > 0)
+            {
+                // Swipe up
+            }
+            else
+            {
+                // Swipe down
+            }
+        }
+
+        xDown = double.MinValue;
+        yDown = double.MinValue;
+    }
+
     protected override async Task OnInitializedAsync()
     {
         loading = true;
         paragraphs = Enumerable.Empty<string>();
         HiddenRefResizedAction = HiddenRefResizedActionCallback;
         ReaderRefResizedAction = ReaderRefResizedActionCallback;
+        ReaderRefTouchMoveAction = ReaderRefTouchMoveCallback;
+        ReaderRefTouchStartAction = ReaderRefTouchStartCallback;
         await GetContent();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
             await JS.InvokeVoidAsync("interopFunctions.initializeBody");
+            await JS.InvokeVoidAsync("interopFunctions.listenToSwipes");
             await JS.InvokeVoidAsync("interopFunctions.observeHiddenRefResized", hiddenRef);
             await JS.InvokeVoidAsync("interopFunctions.observeReaderRefResized", readerRef);
         }
