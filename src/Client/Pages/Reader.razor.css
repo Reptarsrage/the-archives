@@ -30,8 +30,20 @@
   cursor: default;
 }
 
-.progress {
-  height: 2px;
+.progress-count {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.progress-percent {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+.progress-bar {
+  height: 0.5rem;
   background-color: var(--primary-color);
   position: fixed;
   bottom: 0;

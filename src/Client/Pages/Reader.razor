@@ -32,7 +32,11 @@
             }
     </div>
 
-    <div class="progress" style="width: @(progress)%;"></div>
+    <div class="progress-count"><small><b>Page @(page + 1) of @(pageCount)</b></small></div>
+
+    <div class="progress-percent"><small><b>@(Math.Ceiling(progress))%</b></small></div>
+
+    <div class="progress-bar" style="width: @(progress)%;"></div>
 </main>
 
 @code {
