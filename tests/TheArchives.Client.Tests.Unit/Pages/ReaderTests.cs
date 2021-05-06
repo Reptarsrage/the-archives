@@ -36,6 +36,8 @@ namespace TheArchives.Client.Tests.Unit.Pages
             ctx.JSInterop.SetupVoid("interopFunctions.unObserveReaderRefResized", IsElementReference).SetVoidResult();
             ctx.JSInterop.SetupVoid("interopFunctions.initializeBody").SetVoidResult();
             ctx.JSInterop.SetupVoid("interopFunctions.disposeBody").SetVoidResult();
+            ctx.JSInterop.SetupVoid("interopFunctions.listenToSwipes").SetVoidResult();
+            ctx.JSInterop.SetupVoid("interopFunctions.unlistenToSwipes").SetVoidResult();
             ctx.JSInterop.Setup<BoundingClientRect?>("interopFunctions.getBoundingClientRect", IsElementReference).SetResult(new BoundingClientRect { Width = 500 });
 
             // Act

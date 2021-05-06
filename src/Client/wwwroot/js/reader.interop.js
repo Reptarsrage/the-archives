@@ -10,6 +10,16 @@ const observeReaderRefResizedCallback = (event) => {
   DotNet.invokeMethodAsync('TheArchives.Client', 'ReaderRefResized', height, width, left, top)
 }
 
+const handleTouchStart = (event) => {
+  const { clientX, clientY } = event.touches[0]
+  DotNet.invokeMethodAsync('TheArchives.Client', 'ReaderRefTouchStart', clientX, clientY)
+}
+
+const handleTouchMove = (event) => {
+  const { clientX, clientY } = event.touches[0]
+  DotNet.invokeMethodAsync('TheArchives.Client', 'ReaderRefTouchMove', clientX, clientY)
+}
+
 const bodyClass = 'overflow-h'
 const hiddenRefResizeObserver = new ResizeObserver(observeHiddenRefResizedCallback)
 const readerRefResizeObserver = new ResizeObserver(observeReaderRefResizedCallback)
@@ -38,5 +48,13 @@ Object.assign(window.interopFunctions, {
     if (document.body.classList.contains(bodyClass)) {
       document.body.classList.remove(bodyClass)
     }
+  },
+  listenToSwipes() {
+    document.addEventListener('touchstart', handleTouchStart, false)
+    document.addEventListener('touchmove', handleTouchMove, false)
+  },
+  unlistenToSwipes() {
+    document.removeEventListener('touchstart', handleTouchStart)
+    document.removeEventListener('touchmove', handleTouchMove)
   },
 })
