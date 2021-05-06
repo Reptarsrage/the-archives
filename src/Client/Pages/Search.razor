@@ -25,31 +25,7 @@
             <i class="las la-book" /> The Archives
         </a>
 
-        <form class="search" role="search" @onsubmit="Submit">
-            <div class="search-wrapper" @onclick="Focus">
-                <span class="search-icon"><i class="la la-search" /></span>
-
-                <input class="search-input" @bind="searchValue" @ref="searchInput" maxlength="2048" name="search"
-                    type="search" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox"
-                    spellcheck="false" title="Search" />
-
-                @if (fetched)
-                {
-                    <span class="search-stats">
-                        @total.ToString("N0") results in @(timeTaken.ToString("N0"))ms
-                    </span>
-                }
-
-                @if (showSearchClear)
-                {
-                    <button type="button" class="search-clear" @onclick="Clear">
-                        <i class="la la-times" />
-                    </button>
-                }
-            </div>
-
-            <input type="submit" value="Search" class="search-button" />
-        </form>
+        <SearchInput Value=@searchValue ShowStats=@(!loading) TimeTaken=@timeTaken Total=@total ValueChanged="HandleSearchInput" OnSubmitCallback="HandleSubmit" />
 
         <span class="header-auth">
             <NavMenu />
@@ -57,101 +33,118 @@
     </div>
 </header>
 
-@if (!fetched || fetching)
-{
-    <aside class="loader-container">
-        <Loader />
-    </aside>
-}
-else
-{
-    <main class="main">
-        <div class="results">
-            @* Result items list *@
-            <ul class="results-items-list">
-                @foreach (var result in results)
-                {
-                    <li class="item">
+<main class="main">
+    <Loader Loading=@loading />
+
+    <div class="results fade @(loading ? "hidden" : "shown")">
+        @* Result items list *@
+        <ul class="results-items-list">
+            @foreach (var result in results)
+            {
+                <li class="item">
+                    <div>
+                        <a href="/reader/@result.ContentId">
+                            <h5 class="item-title">@result.Title</h5>
+                        </a>
+                    </div>
+                    <div class="item-author">
+                        <span class="item-subheader">
+                            Posted to <em>@result.Brand</em> by <em>@result.Author</em>
+                        </span>
+                    </div>
+                    <div>
+                        <p class="item-description">@result.Description</p>
                         <div>
-                            <a href="/reader/@result.ContentId">
-                                <h5 class="item-title">@result.Title</h5>
-                            </a>
+                            @foreach (var tag in result.Tags)
+                            {
+                                <span class="tag"><i class="las la-tag"></i> @tag.Label</span>
+                            }
                         </div>
-                        <div class="item-author">
-                            <span class="item-subheader">
-                                Posted to <em>@result.Brand</em> by <em>@result.Author</em>
-                            </span>
-                        </div>
-                        <div>
-                            <p class="item-description">@result.Description</p>
-                            <div>
-                                @foreach (var tag in result.Tags)
-                                {
-                                    <span class="tag"><i class="las la-tag"></i> @tag.Label</span>
-                                }
-                            </div>
-                        </div>
-                    </li>
-                }
-            </ul>
-        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
 
-        @* Pagination *@
-        <div class="pager">
-            @if (Page > 5)
+    @* Pagination *@
+    <div class="pager">
+        @if (Page > 5)
+        {
+            <a href="/Search/@queryString" class="page"><i class="la la-angle-double-left"></i></a>
+        }
+
+        @if (Page > 0)
+        {
+            <a href="/Search/@(Page - 1)/@queryString" class="page"><i class="la la-angle-left"></i></a>
+        }
+
+        @{
+            var elasticLimit = 10_000;
+            var totalPossible = Math.Min(elasticLimit, total);
+            var maxPage = (int)Math.Ceiling(totalPossible / (decimal)pageSize);
+            var minPage = Math.Max(1, Math.Min(maxPage - 9, Page - 4));
+        }
+
+        @for (var i = minPage; i < Math.Min(maxPage + 1, minPage + 10); i++)
+        {
+            if (Page + 1 == i)
             {
-                <a href="/Search/@queryString" class="page"><i class="la la-angle-double-left"></i></a>
+                <span class="page active">@i</span>
             }
-
-            @if (Page > 0)
+            else
             {
-                <a href="/Search/@(Page - 1)/@queryString" class="page"><i class="la la-angle-left"></i></a>
+                <a href="/Search/@(i - 1)/@queryString" class="page@(Page - 1 == i ? " active" : string.Empty)">@i</a>
             }
+        }
 
-            @{
-                var elasticLimit = 10_000;
-                var totalPossible = Math.Min(elasticLimit, total);
-                var maxPage = (int)Math.Ceiling(totalPossible / (decimal)PageSize);
-                var minPage = Math.Max(1, Math.Min(maxPage - 9, Page - 4));
-            }
+        @if (Page < maxPage - 1)
+        {
+            <a href="/Search/@(Page + 1)/@queryString" class="page"><i class="la la-angle-right"></i></a>
+        }
+    </div>
+</main>
 
-            @for (var i = minPage; i < Math.Min(maxPage + 1, minPage + 10); i++)
-            {
-                if (Page + 1 == i)
-                {
-                    <span class="page active">@i</span>
-                }
-                else
-                {
-                    <a href="/Search/@(i - 1)/@queryString" class="page@(Page - 1 == i ? " active" : string.Empty)">@i</a>
-                }
-            }
-
-            @if (Page < maxPage - 1)
-            {
-                <a href="/Search/@(Page + 1)/@queryString" class="page"><i class="la la-angle-right"></i></a>
-            }
-        </div>
-    </main>
-}
 
 @code {
     [Parameter]
     public int Page { get; set; } = 0;
 
-    public int PageSize { get; set; } = 10;
+    private int pageSize { get; set; } = 10;
 
     private IEnumerable<Content> results { get; set; } = Enumerable.Empty<Content>();
-    private bool fetched { get; set; } = false;
-    private bool fetching { get; set; } = false;
-    private long total { get; set; } = 0;
-    private long timeTaken { get; set; } = 0;
-    private ElementReference searchInput { get; set; }
-    private string queryString { get; set; } = string.Empty;
-    private string searchValue { get; set; } = string.Empty;
-    private bool showSearchClear => !string.IsNullOrEmpty(searchValue);
 
-    protected override async Task OnParametersSetAsync()
+    private bool fetched { get; set; } = false;
+
+    private bool fetching { get; set; } = false;
+
+    private long total { get; set; } = 0;
+
+    private long timeTaken { get; set; } = 0;
+
+    private string queryString { get; set; } = string.Empty;
+
+    private string searchValue { get; set; } = string.Empty;
+
+    private bool loading => !fetched || fetching;
+
+    private void HandleSearchInput(string value)
+    {
+        searchValue = value;
+    }
+
+    private async Task HandleSubmit()
+    {
+        Page = 0;
+        navManager.NavigateTo(QueryHelpers.AddQueryString("/search", nameof(SearchRequest.Search), searchValue));
+        await Update();
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Update();
+    }
+
+    private async Task Update()
     {
         var uri = navManager.ToAbsoluteUri(navManager.Uri);
         queryString = uri.Query;
@@ -162,24 +155,6 @@ else
         }
 
         await GetSearch();
-    }
-
-    private Task Submit()
-    {
-        Page = 0;
-        navManager.NavigateTo(QueryHelpers.AddQueryString("/search", nameof(SearchRequest.Search), searchValue));
-        return GetSearch();
-    }
-
-    private async Task Clear()
-    {
-        searchValue = string.Empty;
-        await Focus();
-    }
-
-    private async Task Focus()
-    {
-        await searchInput.FocusAsync();
     }
 
     private async Task GetSearch()
@@ -193,7 +168,7 @@ else
             {
                 [nameof(SearchRequest.Search)] = searchValue,
                 [nameof(SearchRequest.Page)] = Page.ToString(),
-                [nameof(SearchRequest.PageSize)] = PageSize.ToString(),
+                [nameof(SearchRequest.PageSize)] = pageSize.ToString(),
             };
 
             var response = await Http.GetFromJsonAsync<SearchResponse>(

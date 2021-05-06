@@ -29,15 +29,13 @@ namespace TheArchives.Client.Tests.Unit.Pages
             var mockNavigationManager = ctx.Services.AddMockNavigationManager(expectedPath);
             var mockHttpClient = ctx.Services.AddMockHttpClient();
 
-            mockNavigationManager.SetUri(
-                $"http://localhost:5000");
-
+            mockNavigationManager.SetUri($"http://localhost:5000{expectedPath}");
             mockHttpClient.When("/api/search*").RespondJson(
                 new SearchResponse(expectedResults, 0, 20, 3, 10, 0xbeef, expectedSearch));
 
             // Act
             var cut = ctx.RenderComponent<Client.Pages.Search>();
-            cut.WaitForState(() => cut.FindAll("li").Count == expectedResults.Count);
+            cut.WaitForState(() => cut.FindAll("li").Count == expectedResults.Count, TimeSpan.FromMilliseconds(500));
         }
     }
 }

@@ -9,20 +9,46 @@ namespace TheArchives.Client.Tests.Unit.Shared
     public class LoaderTests
     {
         [Fact]
-        public void LoaderShouldRender()
+        public void LoaderShouldRender_WhenLoading()
         {
             // Arrange
             using var ctx = new TestContext();
             ctx.AddTestAuthorization();
 
             // Act
-            var cut = ctx.RenderComponent<Loader>();
+            var cut = ctx.RenderComponent<Loader>(parameters =>
+                parameters.Add(p => p.Loading, true)
+            );
 
             // Assert
-            cut.Find(".loader").MarkupMatches(
-                "<div class=\"loader flex-fill flex-center\">" +
-                  "<i class=\"loader-icon las la-book\"></i>" +
-                  "<div class=\"loader-border\"></div>" +
+            cut.Find(".loader-container").MarkupMatches(
+                "<aside class=\"loader-container fade show\">" +
+                    "<div class=\"loader flex-fill flex-center\">" +
+                    "<i class=\"loader-icon las la-book\"></i>" +
+                    "<div class=\"loader-border\"></div>" +
+                    "</div>" +
+                "</div>");
+        }
+
+        [Fact]
+        public void LoaderShouldRender_WhenNotLoading()
+        {
+            // Arrange
+            using var ctx = new TestContext();
+            ctx.AddTestAuthorization();
+
+            // Act
+            var cut = ctx.RenderComponent<Loader>(parameters =>
+                parameters.Add(p => p.Loading, false)
+            );
+
+            // Assert
+            cut.Find(".loader-container").MarkupMatches(
+                "<aside class=\"loader-container fade hidden\">" +
+                    "<div class=\"loader flex-fill flex-center\">" +
+                    "<i class=\"loader-icon las la-book\"></i>" +
+                    "<div class=\"loader-border\"></div>" +
+                    "</div>" +
                 "</div>");
         }
     }

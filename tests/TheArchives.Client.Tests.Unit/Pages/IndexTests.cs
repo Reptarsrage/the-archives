@@ -21,7 +21,7 @@ namespace TheArchives.Client.Tests.Unit.Pages
             var cut = ctx.RenderComponent<Client.Pages.Index>();
             var searchForm = cut.Find("form");
             var searchInput = cut.Find("input[type=\"search\"]");
-            searchInput.Change(expectedSearch);
+            searchInput.Input(expectedSearch);
             searchForm.Submit();
 
             // Assert
