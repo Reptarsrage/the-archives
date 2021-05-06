@@ -21,16 +21,20 @@
 
     <Loader Loading="loading" />
 
-    <div
-      class="pager fade @(loading ? "hidden" : "shown")"
-      style="transform: translate(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;height: @(readerHeight)px;column-count: @pageCount;">
-        <h1>@content?.Title</h1>
+    <Swipe OnSwipeLeft="GoNext" OnSwipeRight="GoPrev">
+        <Children>
+            <div
+                class="pager fade @(loading ? "hidden" : "shown")"
+                style="transform: translate(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;height: @(readerHeight)px;column-count: @pageCount;">
+                    <h1>@content?.Title</h1>
 
-        @foreach (var paragraph in paragraphs ?? Enumerable.Empty<string>())
-        {
-            <p>@paragraph</p>
-        }
-    </div>
+                    @foreach (var paragraph in paragraphs ?? Enumerable.Empty<string>())
+                    {
+                        <p>@paragraph</p>
+                    }
+            </div>
+        </Children>
+    </Swipe>
 </main>
 
 @code {
@@ -127,12 +131,28 @@
         var result = await JS.InvokeAsync<BoundingClientRect>("interopFunctions.getBoundingClientRect", readerRef);
         var percentX = e.ClientX / result.Width;
 
-        if (percentX > 0.1 && page + 1 < pageCount) {
-            page++;
-        } else if (percentX <= 0.1 && page - 1 >= 0) {
-            page--;
+        if (percentX > 0.1) {
+            GoNext();
+        } else if (percentX <= 0.1) {
+            GoPrev();
         }
     }
+
+    private void GoNext()
+    {
+        if (page + 1 < pageCount) 
+        {
+            page++;
+        }
+    }
+
+    private void GoPrev()
+    {
+        if (page - 1 >= 0)
+        {
+            page--;
+        }
+    } 
 
     private async Task GetContent()
     {
