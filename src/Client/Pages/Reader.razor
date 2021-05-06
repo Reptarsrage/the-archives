@@ -23,7 +23,7 @@
 
     <div
         class="pager fade @(loading ? "hidden" : "shown")"
-        style="transform: translate(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;height: @(readerHeight)px;column-count: @pageCount;">
+        style="transform: translate(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;column-count: @pageCount;">
             <h1>@content?.Title</h1>
 
             @foreach (var paragraph in paragraphs ?? Enumerable.Empty<string>())
@@ -31,6 +31,8 @@
                 <p>@paragraph</p>
             }
     </div>
+
+    <div class="progress" style="width: @(progress)%;"></div>
 </main>
 
 @code {
@@ -41,9 +43,11 @@
 
     private ElementReference readerRef { get; set; }
 
+    private double progress => page / (double)Math.Max(1, pageCount - 1) * 100D;
+
     private int page { get; set; } = 0;
 
-    private int pageCount { get; set; } = 0;
+    private int pageCount { get; set; } = 1;
 
     private double pageHeight { get; set; } = 0;
 
@@ -108,22 +112,18 @@
 
     private void ReaderRefResizedActionCallback(double height, double width, double left, double top)
     {
-        readerHeight = height == 0 ? 1 : height;
+        var gutterY = 35;
+        readerHeight = Math.Max(1, height - gutterY);
         pageCount = (int)Math.Floor(pageHeight / readerHeight) + 1;
         StateHasChanged();
     }
 
     private void HiddenRefResizedActionCallback(double height, double width, double left, double top)
     {
-        var gutterX = left * 2;
-        var gutterY = top * 2;
-        var totalHeight = height + gutterY;
-        var totalWidth = width + gutterX;
-        
-        pageHeight = totalHeight;
-        pageWidth = totalWidth;
-        readerHeight = readerHeight == 0 ? 1 : readerHeight;
-        pageCount = (int)Math.Floor(pageHeight / readerHeight) + 1;
+        var totalHeight = height - 35; // top + bottom padding on pager
+        pageHeight = height;
+        pageWidth = width + 2 * left;
+        pageCount = (int)Math.Floor(totalHeight / Math.Max(1, readerHeight)) + 1;
         StateHasChanged();
     }
 
@@ -177,6 +177,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        page = 1;
         loading = true;
         readerHeight = await JS.InvokeAsync<double>("interopFunctions.getHeight");
         paragraphs = Enumerable.Empty<string>();
@@ -212,6 +213,7 @@
         if (page + 1 < pageCount) 
         {
             page++;
+            StateHasChanged();
         }
     }
 
@@ -220,6 +222,7 @@
         if (page - 1 >= 0)
         {
             page--;
+            StateHasChanged();
         }
     } 
 
