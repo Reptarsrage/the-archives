@@ -38,6 +38,7 @@ namespace TheArchives.Client.Tests.Unit.Pages
             ctx.JSInterop.SetupVoid("interopFunctions.disposeBody").SetVoidResult();
             ctx.JSInterop.SetupVoid("interopFunctions.listenToSwipes").SetVoidResult();
             ctx.JSInterop.SetupVoid("interopFunctions.unlistenToSwipes").SetVoidResult();
+            ctx.JSInterop.Setup<double>("interopFunctions.getHeight").SetResult(500);
             ctx.JSInterop.Setup<BoundingClientRect?>("interopFunctions.getBoundingClientRect", IsElementReference).SetResult(new BoundingClientRect { Width = 500 });
 
             // Act
