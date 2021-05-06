@@ -23,7 +23,7 @@
 
     <div
         class="pager fade @(loading ? "hidden" : "shown")"
-        style="transform: translateX(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;columns: @pageCount @(columnWidth)px;height: @(readerHeight)px">
+        style="transform: translateX(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;columns: @pageCount @(columnWidth)px;height: @(columnHeight)px">
             <h1>@content?.Title</h1>
 
             @foreach (var paragraph in paragraphs ?? Enumerable.Empty<string>())
@@ -53,11 +53,13 @@
 
     private int pageCount { get; set; } = 1;
 
+    private double hiddenHeight { get; set; } = 0;
+
     private double pageHeight { get; set; } = 0;
 
     private double pageWidth { get; set; } = 0;
 
-    private double readerHeight { get; set; } = 0;
+    private double columnHeight { get; set; } = 0;
 
     private double columnWidth { get; set; } = 0;
 
@@ -76,6 +78,10 @@
     private static Action<double, double>? ReaderRefTouchMoveAction;
 
     private bool loading { get; set; }
+
+    private bool readerRendered { get; set; }
+
+    private bool hiddenRendered { get; set; }
 
     private double xDown { get; set; } = double.MinValue;
 
@@ -118,20 +124,32 @@
 
     private void ReaderRefResizedActionCallback(double height, double width, double left, double top)
     {
-        var gutterY = 35;
-        readerHeight = Math.Max(1, height - gutterY);
-        pageCount = (int)Math.Floor(pageHeight / readerHeight) + 1;
-        columnWidth = width;
-        StateHasChanged();
+        var gutterY = 35; // top + bottom padding
+        var gutterX = 20; // left + right padding
+
+        pageHeight = height; // height before padding
+        pageWidth = width; // width before padding
+        columnHeight = height - gutterY; // height after padding
+        columnWidth = width - gutterX; // width after padding
+
+        readerRendered = true;
+        UpdatePositions();
     }
 
     private void HiddenRefResizedActionCallback(double height, double width, double left, double top)
     {
-        var totalHeight = height - 35; // top + bottom padding on pager
-        pageHeight = height;
-        pageWidth = width + 2 * left;
-        columnWidth = width;
-        pageCount = (int)Math.Floor(totalHeight / Math.Max(1, readerHeight)) + 1;
+        hiddenHeight = height; // hidden ref height after padding
+        hiddenRendered = true;
+        UpdatePositions();
+    }
+
+    private void UpdatePositions() {
+        if (hiddenRendered && readerRendered)
+        {
+            loading = false;
+        }
+        
+        pageCount = (int)Math.Floor(hiddenHeight / Math.Max(1, columnHeight)) + 1;
         StateHasChanged();
     }
 
@@ -185,14 +203,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        page = 1;
         loading = true;
-        readerHeight = await JS.InvokeAsync<double>("interopFunctions.getHeight");
+        pageCount = 1;
+        page = 0;
         paragraphs = Enumerable.Empty<string>();
+        readerRendered = false;
+        hiddenRendered = false;
+
         HiddenRefResizedAction = HiddenRefResizedActionCallback;
         ReaderRefResizedAction = ReaderRefResizedActionCallback;
         ReaderRefTouchMoveAction = ReaderRefTouchMoveCallback;
         ReaderRefTouchStartAction = ReaderRefTouchStartCallback;
+
         await GetContent();
     }
 
@@ -249,8 +271,6 @@
             // Parse response
             var noConsecutive = new Regex(@"(.)\1\1\1\1\1+").Replace(text, string.Empty); // replace consecutive identical characters in text
             paragraphs = new Regex(@"\n\n").Split(noConsecutive).Where((s) => s.Length > 0); // split into paragraphs
-            page = 0;
-            loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {

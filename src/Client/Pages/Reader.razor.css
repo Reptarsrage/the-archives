@@ -15,6 +15,7 @@
 }
 
 .pager {
+  transform: translateX(0);
   transition: transform 0.1s ease;
   box-sizing: border-box;
   width: 100%;
