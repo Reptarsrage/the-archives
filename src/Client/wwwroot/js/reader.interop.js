@@ -57,7 +57,4 @@ Object.assign(window.interopFunctions, {
     document.removeEventListener('touchstart', handleTouchStart)
     document.removeEventListener('touchmove', handleTouchMove)
   },
-  getHeight() {
-    return window.innerHeight
-  },
 })
