@@ -164,7 +164,7 @@
             return;
         }
 
-        pageCount = (int)Math.Ceiling(hiddenHeight / Math.Max(1, columnHeight)) + 1;
+        pageCount = (int)Math.Floor(hiddenHeight / Math.Max(1, columnHeight)) + 1;
         
         if (!isHidden && page >= 1)
         {
@@ -189,6 +189,15 @@
     {
         if (xDown == double.MinValue || yDown == double.MinValue)
         {
+            return;
+        }
+
+        if (pageHeight - clientY <= 30) {
+            // Handle scrubbing
+            var percent = clientX / pageWidth;
+            page = (int)Math.Round((pageCount - 1) * percent);
+            page = Math.Max(0, Math.Min(pageCount - 1, page));
+            StateHasChanged();
             return;
         }
 
@@ -253,13 +262,20 @@
         }
     }
 
-    private async Task OnReaderClick(MouseEventArgs e) {
-        var result = await JS.InvokeAsync<BoundingClientRect>("interopFunctions.getBoundingClientRect", readerRef);
-        var percentX = e.ClientX / result.Width;
+    private void OnReaderClick(MouseEventArgs e) {
+        var percentX = e.ClientX / pageWidth;
+        
+        if (pageHeight - e.ClientY <= 30) {
+            // Handle scrubbing
+            page = (int)Math.Round((pageCount - 1) * percentX);
+            page = Math.Max(0, Math.Min(pageCount - 1, page));
+            StateHasChanged();
+            return;
+        }
 
-        if (percentX > 0.1) {
+        if (percentX > 0.15) {
             GoNext();
-        } else if (percentX <= 0.1) {
+        } else if (percentX <= 0.15) {
             GoPrev();
         }
     }
