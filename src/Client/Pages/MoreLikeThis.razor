@@ -1,5 +1,5 @@
-﻿@page "/search"
-@page "/search/{Page:int}"
+@page "/more/{ContentId:int}"
+@page "/more/{ContentId:int}/{Page:int}"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using TheArchives.Shared
@@ -7,30 +7,9 @@
 @using System.Collections.Generic
 @attribute [Authorize]
 @inject HttpClient Http
-@inject NavigationManager navManager
 
 <header class="header">
-    <div class="header-top">
-        <a class="nav-logo nav-link" href="/">
-            <i class="las la-book" /> The Archives
-        </a>
-
-        <span class="header-auth">
-            <NavMenu />
-        </span>
-    </div>
-
-    <div class="header-bottom">
-        <a class="nav-logo nav-link" href="/">
-            <i class="las la-book" /> The Archives
-        </a>
-
-        <SearchInput Value=@searchValue ShowStats=@(!loading) TimeTaken=@timeTaken Total=@total ValueChanged="HandleSearchInput" OnSubmitCallback="HandleSubmit" />
-
-        <span class="header-auth">
-            <NavMenu />
-        </span>
-    </div>
+    <h1>More like this</h1>
 </header>
 
 <main class="main">
@@ -70,22 +49,22 @@
     <div class="pager">
         @if (Page > 5)
         {
-            <a href="/Search/@queryString" class="page"><i class="la la-angle-double-left"></i></a>
+            <a href="/more/@ContentId" class="page"><i class="la la-angle-double-left"></i></a>
         }
 
         @if (Page > 0)
         {
-            <a href="/Search/@(Page - 1)/@queryString" class="page"><i class="la la-angle-left"></i></a>
+            <a href="/more/@ContentId/@(Page - 1)" class="page"><i class="la la-angle-left"></i></a>
         }
 
         @{
             var elasticLimit = 10_000;
             var totalPossible = Math.Min(elasticLimit, total);
             var maxPage = (int)Math.Ceiling(totalPossible / (double)pageSize);
-            var minPage = Math.Max(1, Math.Min(maxPage - 9, Page - 4));
+            var minPage = Math.Max(1, Math.Min(maxPage - 6, Page - 3));
         }
 
-        @for (var i = minPage; i < Math.Min(maxPage + 1, minPage + 10); i++)
+        @for (var i = minPage; i < Math.Min(maxPage + 1, minPage + 7); i++)
         {
             if (Page + 1 == i)
             {
@@ -93,13 +72,13 @@
             }
             else
             {
-                <a href="/Search/@(i - 1)/@queryString" class="page@(Page - 1 == i ? " active" : string.Empty)">@i</a>
+                <a href="/more/@ContentId/@(i - 1)" class="page@(Page - 1 == i ? " active" : string.Empty)">@i</a>
             }
         }
 
         @if (Page < maxPage - 1)
         {
-            <a href="/Search/@(Page + 1)/@queryString" class="page"><i class="la la-angle-right"></i></a>
+            <a href="/more/@ContentId/@(Page + 1)/" class="page"><i class="la la-angle-right"></i></a>
         }
     </div>
 </main>
@@ -107,9 +86,14 @@
 
 @code {
     [Parameter]
-    public int Page { get; set; } = 0;
+    public int ContentId { get; set; }
+
+    [Parameter]
+    public int Page { get; set; }
 
     private int pageSize { get; set; } = 10;
+
+    private long total { get; set; }
 
     private IEnumerable<Content> results { get; set; } = Enumerable.Empty<Content>();
 
@@ -117,47 +101,9 @@
 
     private bool fetching { get; set; } = false;
 
-    private long total { get; set; } = 0;
-
-    private long timeTaken { get; set; } = 0;
-
-    private string queryString { get; set; } = string.Empty;
-
-    private string searchValue { get; set; } = string.Empty;
-
     private bool loading => !fetched || fetching;
 
-    private void HandleSearchInput(string value)
-    {
-        searchValue = value;
-    }
-
-    private async Task HandleSubmit()
-    {
-        Page = 0;
-        navManager.NavigateTo(QueryHelpers.AddQueryString("/search", nameof(SearchRequest.Search), searchValue));
-        await Update();
-    }
-
     protected async override Task OnInitializedAsync()
-    {
-        await Update();
-    }
-
-    private async Task Update()
-    {
-        var uri = navManager.ToAbsoluteUri(navManager.Uri);
-        queryString = uri.Query;
-        searchValue = string.Empty;
-        if (QueryHelpers.ParseQuery(queryString).TryGetValue(nameof(SearchRequest.Search), out var search))
-        {
-            searchValue = search;
-        }
-
-        await GetSearch();
-    }
-
-    private async Task GetSearch()
     {
         try
         {
@@ -166,22 +112,20 @@
             // Make request
             var parameters = new Dictionary<string, string>
             {
-                [nameof(SearchRequest.Search)] = searchValue,
-                [nameof(SearchRequest.Page)] = Page.ToString(),
-                [nameof(SearchRequest.PageSize)] = pageSize.ToString(),
+                [nameof(RelatedRequest.Page)] = Page.ToString(),
+                [nameof(RelatedRequest.PageSize)] = pageSize.ToString(),
             };
 
-            var response = await Http.GetFromJsonAsync<SearchResponse>(
-            QueryHelpers.AddQueryString("/api/search", parameters));
+            var response = await Http.GetFromJsonAsync<RelatedResponse>(
+                QueryHelpers.AddQueryString($"/api/search/{ContentId}", parameters));
 
             // Parse response
             if (response != null)
             {
                 results = response.Results;
-                total = response.Total;
-                timeTaken = response.TimeTaken;
                 fetching = false;
                 fetched = true;
+                total = response.Total;
             }
         }
         catch (AccessTokenNotAvailableException exception)

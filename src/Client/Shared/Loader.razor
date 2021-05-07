@@ -1,11 +1,49 @@
+@if (shown)
+{
 <aside class="loader-container fade @(Loading ? "show" : "hidden")">
     <div class="loader flex-fill flex-center">
         <i class="loader-icon las la-book"></i>
         <div class="loader-border"></div>
     </div>
 </aside>
+}
 
 @code {
     [Parameter]
-    public bool Loading { get; set; } = false;
+    public bool Loading { 
+        get {
+            return loading;
+        }
+    
+        set {
+            loading = value;
+            if (loading) {
+                shown = true;
+            } else if (!loading && shown && timer != null) {
+                timer.Enabled = true;
+            }
+        }
+    }
+
+    private bool shown { get; set; } = true;
+
+    private bool loading { get; set; } = false;
+
+    private System.Timers.Timer? timer { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        timer = new System.Timers.Timer(300);
+        timer.Elapsed += OnTimedEvent;
+        timer.AutoReset = false;
+    }
+
+    private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e) 
+    {
+        if (!loading) {
+            shown = false;
+            StateHasChanged();
+        }
+    }
 }
