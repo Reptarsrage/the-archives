@@ -35,13 +35,13 @@
 
 .progress-count {
   position: fixed;
-  bottom: 1rem;
+  bottom: 0.5rem;
   left: 1rem;
 }
 
 .progress-percent {
   position: fixed;
-  bottom: 1rem;
+  bottom: 0.5rem;
   right: 1rem;
 }
 
@@ -52,12 +52,13 @@
   bottom: 0;
   left: 0;
   width: 100%;
+  transition: width cubic-bezier(0.25, 0.46, 0.45, 0.94) 100ms;
 }
 
 .reader-hidden,
 .pager {
   position: fixed;
-  padding: 1rem 1rem 2.5rem 1rem;
+  padding: 1rem 1rem 3rem 1rem;
   top: 0;
   left: 0;
 }

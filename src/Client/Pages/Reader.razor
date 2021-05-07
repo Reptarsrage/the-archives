@@ -23,7 +23,7 @@
 
     <div
         class="pager fade @(loading ? "hidden" : "shown")"
-        style="transform: translateX(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;columns: @pageCount @(columnWidth)px;height: @(columnHeight)px">
+        style="transform: translateX(-@(pageWidth * page)px);width: @(pageCount * pageWidth)px;columns: @pageCount @(columnWidth)px;height: @(pageHeight)px">
             <h1>@content?.Title</h1>
 
             @foreach (var paragraph in paragraphs ?? Enumerable.Empty<string>())
@@ -48,6 +48,8 @@
     private ElementReference readerRef { get; set; }
 
     private double progress => page / (double)Math.Max(1, pageCount - 1) * 100D;
+
+    private double savedProgress { get; set; } = 0;
 
     private int page { get; set; } = 0;
 
@@ -124,7 +126,7 @@
 
     private void ReaderRefResizedActionCallback(double height, double width, double left, double top)
     {
-        var gutterY = 35; // top + bottom padding
+        var gutterY = 40; // top + bottom padding
         var gutterX = 20; // left + right padding
 
         pageHeight = height; // height before padding
@@ -138,18 +140,42 @@
 
     private void HiddenRefResizedActionCallback(double height, double width, double left, double top)
     {
+        if (readerRendered)
+        {
+            // Save progress when hidden re-renders to use when
+            // reader re-renders in a second
+            savedProgress = page / (double)(pageCount - 1);
+        }
+
         hiddenHeight = height; // hidden ref height after padding
         hiddenRendered = true;
-        UpdatePositions();
+        UpdatePositions(true);
     }
 
-    private void UpdatePositions() {
+    private void UpdatePositions(bool isHidden = false) {
         if (hiddenRendered && readerRendered)
         {
+            // Only mark as "loaded" once sizes are determined
+            // this helps prevent thrashing
             loading = false;
+        } else if (!readerRendered)
+        {
+            // Skip calculating page if reader hasn't updated it's height yet
+            return;
         }
+
+        pageCount = (int)Math.Ceiling(hiddenHeight / Math.Max(1, columnHeight)) + 1;
         
-        pageCount = (int)Math.Floor(hiddenHeight / Math.Max(1, columnHeight)) + 1;
+        if (!isHidden && page >= 1)
+        {
+            // If not on first page, and page count has changed
+            // try to maintain the relative position within the document
+            var newPage = (int)Math.Floor((pageCount - 1) * savedProgress);
+            var newProgress = newPage / (double)(pageCount - 1);
+            Console.WriteLine($"{savedProgress * 100D}% => {newProgress * 100D}%");
+            page = Math.Min(pageCount - 1, Math.Max(0, newPage));
+        }
+
         StateHasChanged();
     }
 
