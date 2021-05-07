@@ -8,6 +8,7 @@
 @implements IAsyncDisposable
 @inject HttpClient Http
 @inject IJSRuntime JS
+@inject NavigationManager navManager
 
 <main class="reader" @ref="readerRef" @onclick="OnReaderClick"> 
     <div class="reader-hidden" @ref="hiddenRef">
@@ -17,6 +18,9 @@
         {
             <p>@paragraph</p>
         }
+
+        <h2 class="end">The End</h2>
+        <h3>See more like this <i class="la la-angle-double-right"></i></h3>
     </div>
 
     <Loader Loading="loading" />
@@ -30,6 +34,9 @@
             {
                 <p>@paragraph</p>
             }
+
+            <h2 class="end">The End</h2>
+            <h3>See more like this <i class="la la-angle-double-right"></i></h3>
     </div>
 
     <div class="progress-count"><small><b>Page @(page + 1) of @(pageCount)</b></small></div>
@@ -126,7 +133,7 @@
 
     private void ReaderRefResizedActionCallback(double height, double width, double left, double top)
     {
-        var gutterY = 40; // top + bottom padding
+        var gutterY = 55; // top + bottom padding
         var gutterX = 20; // left + right padding
 
         pageHeight = height; // height before padding
@@ -134,8 +141,8 @@
         columnHeight = height - gutterY; // height after padding
         columnWidth = width - gutterX; // width after padding
 
-        readerRendered = true;
         UpdatePositions();
+        readerRendered = true;
     }
 
     private void HiddenRefResizedActionCallback(double height, double width, double left, double top)
@@ -148,8 +155,8 @@
         }
 
         hiddenHeight = height; // hidden ref height after padding
-        hiddenRendered = true;
         UpdatePositions(true);
+        hiddenRendered = true;
     }
 
     private void UpdatePositions(bool isHidden = false) {
@@ -282,6 +289,12 @@
 
     private void GoNext()
     {
+        if (page + 1 == pageCount) {
+            // Go to more like this page
+            navManager.NavigateTo($"/more/{ContentId}");
+            return;
+        }
+
         if (page + 1 < pageCount) 
         {
             page++;
