@@ -26,7 +26,6 @@ const readerRefResizeObserver = new ResizeObserver(observeReaderRefResizedCallba
 
 window.interopFunctions = window.interopFunctions || {}
 Object.assign(window.interopFunctions, {
-  getBoundingClientRect: (element) => element.getBoundingClientRect(),
   observeHiddenRefResized: (element) => {
     hiddenRefResizeObserver.observe(element)
   },
