@@ -44,7 +44,7 @@ namespace TheArchives.Server.HostedServices
                 if (expectedCount != actualCount) {
                     var count = 0;
                     var page = 1;
-                    var pageSize = 100;
+                    var pageSize = 1000;
                     while (count < expectedCount) {
                         _logger.LogInformation("Indexing elastic documents {Count} / {Total}", count, expectedCount);
                         var docs = await _contentRepository.ListAsync(page++, pageSize, cancellationToken);
