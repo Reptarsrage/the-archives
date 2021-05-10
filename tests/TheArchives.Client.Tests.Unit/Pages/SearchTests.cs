@@ -18,9 +18,9 @@ namespace TheArchives.Client.Tests.Unit.Pages
             var expectedSearch = "EXPECTED SEARCH";
             var expectedPath = $"/search?search={Uri.EscapeDataString(expectedSearch)}";
             var expectedResults = new List<Content> {
-                new Content(0, "BRAND", "TITLE", "DESC", "AUTHOR", new Tag[0]),
-                new Content(1, "BRAND", "TITLE", "DESC", "AUTHOR", new Tag[0]),
-                new Content(2, "BRAND", "TITLE", "DESC", "AUTHOR", new Tag[0]),
+                new Content(0, "BRAND", "TITLE", "DESC", "AUTHOR", new string[0]),
+                new Content(1, "BRAND", "TITLE", "DESC", "AUTHOR", new string[0]),
+                new Content(2, "BRAND", "TITLE", "DESC", "AUTHOR", new string[0]),
             };
 
             using var ctx = new TestContext();

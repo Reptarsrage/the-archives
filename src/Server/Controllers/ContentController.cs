@@ -55,7 +55,7 @@ namespace TheArchives.Server.Controllers
             }
 
             // Read document text (cached)
-            var documentPath = Path.Combine(_options.Value.BaseDir!, contentDto.Path!);
+            var documentPath = Path.Join(_options.Value.BaseDir!, contentDto.Path!);
             return await _memoryCache.GetOrCreateAsync($"{nameof(ContentController)}_{documentPath}", async (entry) =>
             {
                 entry.SlidingExpiration = TimeSpan.FromMinutes(10);
@@ -79,6 +79,20 @@ namespace TheArchives.Server.Controllers
             }
 
             return _mapper.Map<Content>(contentDto);
+        }
+
+        [HttpGet("count")]
+        [ResponseCache(Duration = 86400)]
+        public async Task<ActionResult<long>> GetContentCount(CancellationToken cancellationToken = default)
+        {
+            return await _contentRepository.CountAsync(cancellationToken);
+        }
+
+        [HttpGet("tags/count")]
+        [ResponseCache(Duration = 86400)]
+        public async Task<ActionResult<long>> GetTagsCount(CancellationToken cancellationToken = default)
+        {
+            return await _contentRepository.CountTagsAsync(cancellationToken);
         }
     }
 }

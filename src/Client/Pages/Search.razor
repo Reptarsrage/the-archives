@@ -25,7 +25,14 @@
             <i class="las la-book" /> The Archives
         </a>
 
-        <SearchInput Value=@searchValue ShowStats=@(!loading) TimeTaken=@timeTaken Total=@total ValueChanged="HandleSearchInput" OnSubmitCallback="HandleSubmit" />
+        <SearchInput Value=@searchValue ValueChanged="HandleSearchInput" OnSubmitCallback="HandleSubmit">
+            <SearchStats>
+                @if (!loading)
+                {
+                    <span>@total.ToString("N0") results in @(timeTaken.ToString("N0"))ms</span>
+                }
+            </SearchStats>
+        </SearchInput>
 
         <span class="header-auth">
             <NavMenu />
@@ -57,7 +64,7 @@
                         <div>
                             @foreach (var tag in result.Tags)
                             {
-                                <span class="tag"><i class="las la-tag"></i> @tag.Label</span>
+                                <span class="tag"><i class="las la-tag"></i> @tag</span>
                             }
                         </div>
                     </div>

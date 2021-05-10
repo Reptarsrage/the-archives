@@ -98,7 +98,7 @@ namespace TheArchives.Server.Tests.Unit.Controllers
             var expectedTitle = "EXPECTED TITLE";
             var expectedContentDto = new Models.Dto.Content { Title = expectedTitle };
             var cacheKey1 = $"{nameof(ContentController)}_{expectedContentId}";
-            var expectedModel = new Shared.Content(expectedContentId, string.Empty, string.Empty, string.Empty, string.Empty, new Shared.Tag[0]);
+            var expectedModel = new Shared.Content(expectedContentId, string.Empty, string.Empty, string.Empty, string.Empty, new string[0]);
 
             object junk;
             The<IMemoryCache>().Setup(m => m.TryGetValue(cacheKey1, out junk)).Returns(false);

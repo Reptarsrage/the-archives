@@ -28,7 +28,7 @@ namespace TheArchives.Client.Tests.Unit.Pages
             mockNavigationManager.SetUri($"http://localhost:5000{expectedPath}");
             mockHttpClient.When($"/api/content/text/{expectedContentId}").RespondText(expectedText);
             mockHttpClient.When($"/api/content/{expectedContentId}").RespondJson(
-                new Content(0, "BRAND", "TITLE", "DESC", "AUTHOR", new Tag[0]));
+                new Content(0, "BRAND", "TITLE", "DESC", "AUTHOR", new string[0]));
 
             ctx.JSInterop.SetupVoid("interopFunctions.observeHiddenRefResized", IsElementReference).SetVoidResult();
             ctx.JSInterop.SetupVoid("interopFunctions.observeReaderRefResized", IsElementReference).SetVoidResult();

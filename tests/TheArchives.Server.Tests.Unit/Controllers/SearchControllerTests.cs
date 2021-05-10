@@ -52,7 +52,7 @@ namespace TheArchives.Server.Tests.Unit.Controllers
 
             The<IMapper>()
                 .Setup(m => m.Map<Shared.Content>(It.IsAny<Models.Elastic.Content>()))
-                .Returns(new Shared.Content(0xdead, string.Empty, string.Empty, string.Empty, string.Empty, new Shared.Tag[0]));
+                .Returns(new Shared.Content(0xdead, string.Empty, string.Empty, string.Empty, string.Empty, new string[0]));
 
             // Act
             var response = await Target.GetSearch(expectedRequest);
@@ -122,7 +122,7 @@ namespace TheArchives.Server.Tests.Unit.Controllers
 
             The<IMapper>()
                 .Setup(m => m.Map<Shared.Content>(It.IsAny<Models.Elastic.Content>()))
-                .Returns(new Shared.Content(0xdead, string.Empty, string.Empty, string.Empty, string.Empty, new Shared.Tag[0]));
+                .Returns(new Shared.Content(0xdead, string.Empty, string.Empty, string.Empty, string.Empty, new string[0]));
 
             // Act
             var response = await Target.GetRelated(expectedDocumentId, expectedRequest);
