@@ -6,10 +6,10 @@
             type="search" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox"
             spellcheck="false" title="Search" />
 
-        @if (ShowStats)
+        @if (SearchStats != null)
         {
             <span class="search-stats">
-                @Total.ToString("N0") results in @(TimeTaken.ToString("N0"))ms
+                @SearchStats
             </span>
         }
 
@@ -27,15 +27,9 @@
 @code {
     [Parameter]
     public string Value { get; set; } = string.Empty;
-
+    
     [Parameter]
-    public bool ShowStats { get; set; }
-
-    [Parameter]
-    public long Total { get; set; }
-
-    [Parameter]
-    public long TimeTaken { get; set; }
+    public RenderFragment? SearchStats { get; set; }
 
     [Parameter]
     public EventCallback<string> ValueChanged { get; set; }

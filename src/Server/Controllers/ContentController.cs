@@ -80,5 +80,19 @@ namespace TheArchives.Server.Controllers
 
             return _mapper.Map<Content>(contentDto);
         }
+
+        [HttpGet("count")]
+        [ResponseCache(Duration = 86400)]
+        public async Task<ActionResult<long>> GetContentCount(CancellationToken cancellationToken = default)
+        {
+            return await _contentRepository.CountAsync(cancellationToken);
+        }
+
+        [HttpGet("tags/count")]
+        [ResponseCache(Duration = 86400)]
+        public async Task<ActionResult<long>> GetTagsCount(CancellationToken cancellationToken = default)
+        {
+            return await _contentRepository.CountTagsAsync(cancellationToken);
+        }
     }
 }

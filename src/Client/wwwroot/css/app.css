@@ -418,6 +418,22 @@ li {
   opacity: 0;
 }
 
+.mr-1 {
+  margin-right: 1rem;
+}
+
+.mt-1 {
+  top: 1rem;
+}
+ 
+.ml-1 {
+  left: 1rem;
+}
+
+.mb-1 {
+  bottom: 1rem;
+}
+
 /* Misc
   –––––––––––––––––––––––––––––––––––––––––––––––––– */
 hr {

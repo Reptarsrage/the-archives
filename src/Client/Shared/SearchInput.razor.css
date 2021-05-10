@@ -50,6 +50,9 @@
   top: 100%;
   margin-top: -10px;
   color: #888;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .search-button {

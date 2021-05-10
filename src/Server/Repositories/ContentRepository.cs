@@ -15,6 +15,12 @@ namespace TheArchives.Server.Repositories
         Task<Content?> GetAsync(int contentId, CancellationToken cancellationToken = default);
 
         Task<long> CountAsync(CancellationToken cancellationToken = default);
+
+        Task<long> CountTagsAsync(CancellationToken cancellationToken = default);
+
+        Task<long> CountAuthorsAsync(CancellationToken cancellationToken = default);
+
+        Task<long> CountBrandsAsync(CancellationToken cancellationToken = default);
     }
 
     public class ContentRepository : IContentRepository
@@ -33,6 +39,21 @@ namespace TheArchives.Server.Repositories
 
         public async Task<long> CountAsync(CancellationToken cancellationToken = default)
             => await _dbContext.Content!.CountAsync(cancellationToken);
+
+        public async Task<long> CountTagsAsync(CancellationToken cancellationToken = default)
+            => await _dbContext.Tags!.CountAsync(cancellationToken);
+        
+        public async Task<long> CountBrandsAsync(CancellationToken cancellationToken = default)
+            => await _dbContext.Content!
+            .Select(c => c.Brand)
+            .Distinct()
+            .CountAsync(cancellationToken);
+
+        public async Task<long> CountAuthorsAsync(CancellationToken cancellationToken = default)
+            => await _dbContext.Content!
+            .Select(c => c.Author)
+            .Distinct()
+            .CountAsync(cancellationToken);
 
         public async Task<List<Content>> ListAsync(int page, int pageSize, CancellationToken cancellationToken = default)
             => await _dbContext.Content!

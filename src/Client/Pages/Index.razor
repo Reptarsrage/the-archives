@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @attribute [Authorize]
 @inject NavigationManager navManager
+@inject HttpClient httpClient
 
 <header class="header-top">
     <span class="header-auth">
@@ -16,11 +17,58 @@
         <h1><i class="la la-book"></i> The Archives</h1>
     </div>
 
-    <SearchInput Value=@searchValue ValueChanged="HandleSearchInput" OnSubmitCallback="HandleSubmit" />
+    <SearchInput Value=@searchValue ValueChanged="HandleSearchInput" OnSubmitCallback="HandleSubmit">
+        <SearchStats>
+            @if (contentCount > 0)
+            {
+                <span class="mr-1"><i class="la la-book"></i> @contentCount.ToString("N0") stories</span>
+            }
+
+            @if (tagsCount > 0)
+            {
+                <span class="mr-1"><i class="la la-tags"></i> @tagsCount.ToString("N0") tags</span>
+            }
+
+            @if (authorsCount > 0)
+            {
+                <span class="mr-1"><i class="la la-user"></i> @authorsCount.ToString("N0") authors</span>
+            }   
+            
+            @if (brandsCount > 0)
+            {
+                <span class="mr-1"><i class="la la-globe"></i> @brandsCount.ToString("N0") sources</span>
+            }
+
+            <span><i class="la la-otter"></i> 1 playful otter</span>
+        </SearchStats>
+    </SearchInput>
 </main>
 
 @code {
     private string searchValue { get; set; } = string.Empty;
+
+    private long contentCount { get; set; }
+
+    private long tagsCount { get; set; }
+
+    private long authorsCount { get; set; }
+
+    private long brandsCount { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var contentCountTask = httpClient.GetFromJsonAsync<long>("/api/content/count");
+        var tagsCountTask = httpClient.GetFromJsonAsync<long>("/api/tags/count");
+        var authorsCountTask = httpClient.GetFromJsonAsync<long>("/api/authors/count");
+        var brandsCountTask = httpClient.GetFromJsonAsync<long>("/api/brands/count");
+
+        await Task.WhenAll(contentCountTask, tagsCountTask, authorsCountTask, brandsCountTask);
+
+        contentCount = contentCountTask.Result;
+        tagsCount = tagsCountTask.Result;
+        authorsCount = authorsCountTask.Result;
+        brandsCount = brandsCountTask.Result;
+    }
 
     private void HandleSearchInput(string value)
     {
