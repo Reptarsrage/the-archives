@@ -19,7 +19,27 @@ namespace TheArchives.Server.Data
                 .Entity<Content>()
                 .HasMany(s => s.Tags)
                 .WithMany(c => c.Content)
-                .UsingEntity(j => j.ToTable("TaggedContent"));
+                .UsingEntity<ContentTag>(
+                    j => j
+                        .HasOne(pt => pt.Tag)
+                        .WithMany(t => t.ContentTags)
+                        .HasForeignKey(pt => pt.TagId),
+                    j => j
+                        .HasOne(pt => pt.Content)
+                        .WithMany(p => p.ContentTags)
+                        .HasForeignKey(pt => pt.ContentId));
+
+            modelBuilder.Entity<Content>()
+               .HasIndex(u => u.Url)
+               .IsUnique();
+
+            modelBuilder.Entity<Tag>(e =>
+                e.Property(o => o.Label)
+                    .UseCollation("NOCASE"));
+
+            modelBuilder.Entity<Tag>()
+               .HasIndex(u => u.Label)
+               .IsUnique();
         }
     }
 }

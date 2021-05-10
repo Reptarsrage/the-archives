@@ -46,18 +46,9 @@ namespace TheArchives.Server.Extensions
                         .Keyword(s => s
                             .Name(n => n.Brand)
                         )
-                        .Object<Tag>(o => o
+                        .Keyword(s => s
                             .Name(n => n.Tags)
-                            .Properties(eps => eps
-                                .Keyword(s => s
-                                    .Name(e => e.Label)
-                                    .Boost(7)
-                                )
-                                .Number(s => s
-                                    .Name(e => e.Count)
-                                    .Index(false)
-                                )
-                            )
+                            .Boost(7)
                         )
                     )
                 ),

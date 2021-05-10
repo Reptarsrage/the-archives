@@ -8,15 +8,16 @@ namespace TheArchives.Server.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "Content",
-                columns: table => new {
+                columns: table => new
+                {
                     ContentId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Brand = table.Column<string>(type: "TEXT", nullable: true),
-                    Title = table.Column<string>(type: "TEXT", nullable: true),
-                    Description = table.Column<string>(type: "TEXT", nullable: true),
-                    Path = table.Column<string>(type: "TEXT", nullable: true),
-                    Url = table.Column<string>(type: "TEXT", nullable: true),
-                    Author = table.Column<string>(type: "TEXT", nullable: true)
+                    Brand = table.Column<string>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    Path = table.Column<string>(type: "TEXT", nullable: false),
+                    Url = table.Column<string>(type: "TEXT", nullable: false),
+                    Author = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,10 +26,11 @@ namespace TheArchives.Server.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Tags",
-                columns: table => new {
+                columns: table => new
+                {
                     TagId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Label = table.Column<string>(type: "TEXT", nullable: true),
+                    Label = table.Column<string>(type: "TEXT", nullable: false, collation: "NOCASE"),
                     Count = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -37,38 +39,51 @@ namespace TheArchives.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TaggedContent",
-                columns: table => new {
+                name: "ContentTag",
+                columns: table => new
+                {
                     ContentId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TagsTagId = table.Column<int>(type: "INTEGER", nullable: false)
+                    TagId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TaggedContent", x => new { x.ContentId, x.TagsTagId });
+                    table.PrimaryKey("PK_ContentTag", x => new { x.ContentId, x.TagId });
                     table.ForeignKey(
-                        name: "FK_TaggedContent_Content_ContentId",
+                        name: "FK_ContentTag_Content_ContentId",
                         column: x => x.ContentId,
                         principalTable: "Content",
                         principalColumn: "ContentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TaggedContent_Tags_TagsTagId",
-                        column: x => x.TagsTagId,
+                        name: "FK_ContentTag_Tags_TagId",
+                        column: x => x.TagId,
                         principalTable: "Tags",
                         principalColumn: "TagId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaggedContent_TagsTagId",
-                table: "TaggedContent",
-                column: "TagsTagId");
+                name: "IX_Content_Url",
+                table: "Content",
+                column: "Url",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContentTag_TagId",
+                table: "ContentTag",
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_Label",
+                table: "Tags",
+                column: "Label",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "TaggedContent");
+                name: "ContentTag");
 
             migrationBuilder.DropTable(
                 name: "Content");

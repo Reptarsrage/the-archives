@@ -15,21 +15,6 @@ namespace TheArchives.Server.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.0-preview.3.21201.2");
 
-            modelBuilder.Entity("ContentTag", b =>
-                {
-                    b.Property<int>("ContentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TagsTagId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ContentId", "TagsTagId");
-
-                    b.HasIndex("TagsTagId");
-
-                    b.ToTable("TaggedContent");
-                });
-
             modelBuilder.Entity("TheArchives.Server.Models.Dto.Content", b =>
                 {
                     b.Property<int>("ContentId")
@@ -37,26 +22,50 @@ namespace TheArchives.Server.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Author")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Brand")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Path")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ContentId");
 
+                    b.HasIndex("Url")
+                        .IsUnique();
+
                     b.ToTable("Content");
+                });
+
+            modelBuilder.Entity("TheArchives.Server.Models.Dto.ContentTag", b =>
+                {
+                    b.Property<int>("ContentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ContentId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ContentTag");
                 });
 
             modelBuilder.Entity("TheArchives.Server.Models.Dto.Tag", b =>
@@ -69,26 +78,45 @@ namespace TheArchives.Server.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Label")
-                        .HasColumnType("TEXT");
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .UseCollation("NOCASE");
 
                     b.HasKey("TagId");
+
+                    b.HasIndex("Label")
+                        .IsUnique();
 
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("ContentTag", b =>
+            modelBuilder.Entity("TheArchives.Server.Models.Dto.ContentTag", b =>
                 {
-                    b.HasOne("TheArchives.Server.Models.Dto.Content", null)
-                        .WithMany()
+                    b.HasOne("TheArchives.Server.Models.Dto.Content", "Content")
+                        .WithMany("ContentTags")
                         .HasForeignKey("ContentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TheArchives.Server.Models.Dto.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsTagId")
+                    b.HasOne("TheArchives.Server.Models.Dto.Tag", "Tag")
+                        .WithMany("ContentTags")
+                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Content");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("TheArchives.Server.Models.Dto.Content", b =>
+                {
+                    b.Navigation("ContentTags");
+                });
+
+            modelBuilder.Entity("TheArchives.Server.Models.Dto.Tag", b =>
+                {
+                    b.Navigation("ContentTags");
                 });
 #pragma warning restore 612, 618
         }

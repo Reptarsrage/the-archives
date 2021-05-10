@@ -31,8 +31,6 @@ namespace TheArchives.Server.Extensions
                 .DefaultIndex(defaultIndex)
                 .DefaultMappingFor<Content>(clrTypeMapping => clrTypeMapping
                     .IdProperty(content => content.ContentId)
-                ).DefaultMappingFor<Tag>(clrTypeMapping => clrTypeMapping
-                    .IdProperty(tag => tag.TagId)
                 );
 
             var client = new ElasticClient(settings);
