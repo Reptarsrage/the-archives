@@ -33,10 +33,6 @@ namespace TheArchives.Server.Data
                .HasIndex(u => u.Url)
                .IsUnique();
 
-            modelBuilder.Entity<Tag>(e =>
-                e.Property(o => o.Label)
-                    .UseCollation("NOCASE"));
-
             modelBuilder.Entity<Tag>()
                .HasIndex(u => u.Label)
                .IsUnique();

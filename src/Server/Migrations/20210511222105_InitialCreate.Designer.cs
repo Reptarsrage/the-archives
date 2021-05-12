@@ -8,7 +8,7 @@ using TheArchives.Server.Data;
 namespace TheArchives.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210510210735_InitialCreate")]
+    [Migration("20210511222105_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace TheArchives.Server.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Keywords")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Path")
@@ -81,8 +84,7 @@ namespace TheArchives.Server.Migrations
 
                     b.Property<string>("Label")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .UseCollation("NOCASE");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("TagId");
 

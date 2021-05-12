@@ -30,11 +30,15 @@ namespace TheArchives.Server.Extensions
                         .Text(s => s
                             .Name(n => n.Title)
                             .Analyzer("custom_analyzer")
-                            .Boost(3)
+                            .Boost(8)
                         )
                         .Text(s => s
                             .Name(n => n.Description)
                             .Analyzer("custom_analyzer")
+                        )
+                        .Text(s => s
+                            .Name(n => n.Keywords)
+                            .Boost(5)
                         )
                         .Text(s => s
                             .Name(n => n.Path)
@@ -42,13 +46,15 @@ namespace TheArchives.Server.Extensions
                         )
                         .Keyword(s => s
                             .Name(n => n.Author)
+                            .Boost(3)
                         )
                         .Keyword(s => s
                             .Name(n => n.Brand)
+                            .Boost(2)
                         )
                         .Keyword(s => s
                             .Name(n => n.Tags)
-                            .Boost(7)
+                            .Boost(13)
                         )
                     )
                 ),

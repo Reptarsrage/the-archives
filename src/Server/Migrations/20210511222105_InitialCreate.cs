@@ -17,7 +17,8 @@ namespace TheArchives.Server.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Path = table.Column<string>(type: "TEXT", nullable: false),
                     Url = table.Column<string>(type: "TEXT", nullable: false),
-                    Author = table.Column<string>(type: "TEXT", nullable: false)
+                    Author = table.Column<string>(type: "TEXT", nullable: false),
+                    Keywords = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -30,7 +31,7 @@ namespace TheArchives.Server.Migrations
                 {
                     TagId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Label = table.Column<string>(type: "TEXT", nullable: false, collation: "NOCASE"),
+                    Label = table.Column<string>(type: "TEXT", nullable: false),
                     Count = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

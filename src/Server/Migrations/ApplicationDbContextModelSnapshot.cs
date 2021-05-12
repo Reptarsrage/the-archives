@@ -33,6 +33,9 @@ namespace TheArchives.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Keywords")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -79,8 +82,7 @@ namespace TheArchives.Server.Migrations
 
                     b.Property<string>("Label")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .UseCollation("NOCASE");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("TagId");
 
