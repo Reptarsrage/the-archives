@@ -20,8 +20,11 @@ namespace TheArchives.Server.MappingProfiles
 
             // Map from DTO => ES
             CreateMap<DTO.Content, ES.Content>()
-                .ForMember(dest => dest.Tags, 
-                    opt => opt.MapFrom(src => src.Tags!.Select(tag => tag.Label)));
+                .ForMember(dest => dest.Tags,
+                    opt => opt.MapFrom(src => src.Tags!.Select(tag => tag.Label)))
+                .ForMember(dest => dest.Keywords,
+                    opt => opt.MapFrom(src => 
+                        src.Keywords!.Split(' ', System.StringSplitOptions.RemoveEmptyEntries)));
         }
     }
 }

@@ -26,8 +26,6 @@ namespace TheArchives.Server.Extensions
             var pool = new SingleNodeConnectionPool(new Uri(url));
             var settings = new ConnectionSettings(pool)
                 .RequestTimeout(TimeSpan.FromSeconds(5))
-                .DisableDirectStreaming()
-                .PrettyJson()
                 .DefaultIndex(defaultIndex)
                 .DefaultMappingFor<Content>(clrTypeMapping => clrTypeMapping
                     .IdProperty(content => content.ContentId)

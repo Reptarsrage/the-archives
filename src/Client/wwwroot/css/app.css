@@ -17,8 +17,8 @@
   html is set to 62.5% so that all the REM measurements throughout Skeleton
   are based on 10px sizing. So basically 1.5rem = 15px :) */
 html {
-  height: 100%;
   font-size: 62.5%;
+  height: 100%;
 }
 
 body {
@@ -28,14 +28,18 @@ body {
   font-family: 'Literata', serif;
   color: #222;
   height: 100%;
+  display: flex;
+  flex-direction: column;
   margin: 0;
   padding: 0;
 }
 
 #app {
-  height: 100%;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
 }
 
 #blazor-error-ui {
