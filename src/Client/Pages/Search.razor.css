@@ -1,7 +1,7 @@
 ﻿.main {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1 1 auto;
   padding: 0 10px 20px 10px;
   position: relative;
 }
