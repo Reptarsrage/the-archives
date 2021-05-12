@@ -1,6 +1,7 @@
 ﻿.main {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   align-items: center;
   height: 100%;
   padding: 8px;

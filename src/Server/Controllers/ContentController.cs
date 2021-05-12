@@ -85,14 +85,11 @@ namespace TheArchives.Server.Controllers
         [ResponseCache(Duration = 86400)]
         public async Task<ActionResult<long>> GetContentCount(CancellationToken cancellationToken = default)
         {
-            return await _contentRepository.CountAsync(cancellationToken);
-        }
-
-        [HttpGet("tags/count")]
-        [ResponseCache(Duration = 86400)]
-        public async Task<ActionResult<long>> GetTagsCount(CancellationToken cancellationToken = default)
-        {
-            return await _contentRepository.CountTagsAsync(cancellationToken);
+            return await _memoryCache.GetOrCreateAsync($"{nameof(ContentController)}_{nameof(GetContentCount)}", async (entry) =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours(1);
+                return await _contentRepository.CountAsync(cancellationToken);
+            });
         }
     }
 }
