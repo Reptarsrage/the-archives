@@ -455,3 +455,6 @@ $RECYCLE.BIN/
 
 # Sqlite
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
