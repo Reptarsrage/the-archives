@@ -18,6 +18,8 @@ namespace TheArchives.Server.Models.Dto
 
         public string Author { get; set; } = null!;
 
+        public string? Keywords { get; set; }
+
         public ICollection<Tag>? Tags { get; set; }
 
         public List<ContentTag>? ContentTags { get; set; }

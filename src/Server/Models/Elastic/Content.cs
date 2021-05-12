@@ -18,6 +18,8 @@ namespace TheArchives.Server.Models.Elastic
 
         public string? Author { get; set; }
 
+        public string? Keywords { get; set; }
+
         public IEnumerable<string>? Tags { get; set; }
     }
 }
