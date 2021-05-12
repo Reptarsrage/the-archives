@@ -128,6 +128,8 @@
 
     private long timeTaken { get; set; } = 0;
 
+    private int page { get; set; } = 0;
+
     private string queryString { get; set; } = string.Empty;
 
     private string searchValue { get; set; } = string.Empty;
@@ -149,6 +151,13 @@
     protected async override Task OnInitializedAsync()
     {
         await Update();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Page != page) {
+            await Update();
+        }
     }
 
     private async Task Update()
@@ -187,6 +196,7 @@
                 results = response.Results;
                 total = response.Total;
                 timeTaken = response.TimeTaken;
+                page = response.Page;
                 fetching = false;
                 fetched = true;
             }
