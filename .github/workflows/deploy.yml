@@ -26,6 +26,9 @@ jobs:
         with:
           dotnet-version: 6.0.100-preview.3.21202.5
 
+      - name: Build
+        run: dotnet build -c Release
+
       - name: Publish
         run: dotnet publish ./src/Server/TheArchives.Server.csproj -o ./publish -c Release
 
