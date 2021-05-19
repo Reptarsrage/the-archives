@@ -26,3 +26,14 @@
   max-height: 290px;
   height: calc(100% - 560px);
 }
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: auto;
+  max-width: 400px;
+  color: #888;
+  padding: 1rem;
+}
