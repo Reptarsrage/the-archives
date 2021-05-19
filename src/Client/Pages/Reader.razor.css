@@ -5,6 +5,10 @@
   flex: 1 1 auto;
 }
 
+.backdrop {
+  display: none;
+}
+
 .reader-hidden {
   visibility: hidden;
   opacity: 0;
@@ -81,4 +85,52 @@
   position: fixed;
   bottom: 1rem;
   right: 1rem;
+}
+
+@media (min-width: 932px) {
+  .backdrop {
+    background-image: linear-gradient(
+      45deg,
+      #222222 25%,
+      #efefef 25%,
+      #efefef 50%,
+      #222222 50%,
+      #222222 75%,
+      #efefef 75%,
+      #efefef 100%
+    );
+    background-size: 4px 4px;
+    display: block;
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  .reader {
+    width: 500px;
+    max-height: 880px;
+    margin: auto;
+    border: 2px solid #222;
+    overflow: hidden;
+    background: #fff;
+    z-index: 2;
+    font-size: 1.8rem;
+    line-height: 2.1rem;
+  }
+
+  .reader p {
+    margin-bottom: 2rem;
+  }
+
+  .progress-count,
+  .progress-percent,
+  .progress-bar,
+  .reader-hidden,
+  .pager,
+  .see-more {
+    position: absolute;
+  }
 }

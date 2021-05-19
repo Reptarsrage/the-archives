@@ -6,9 +6,11 @@
 @using TheArchives.Shared
 @attribute [Authorize]
 @implements IAsyncDisposable
-@inject HttpClient Http
 @inject IJSRuntime JS
+@inject HttpClient httpClient
 @inject NavigationManager navManager
+
+<aside class="backdrop"></aside>
 
 <main class="reader" @ref="readerRef" @onclick="OnReaderClick"> 
     <div class="reader-hidden" @ref="hiddenRef">
@@ -268,10 +270,16 @@
         }
     }
 
-    private void OnReaderClick(MouseEventArgs e) {
-        var percentX = e.ClientX / pageWidth;
+    private async Task OnReaderClick(MouseEventArgs e) {
+        // Get offsets for reader
+        var clientRect = await JS.InvokeAsync<BoundingClientRect>("interopFunctions.getBoundingClientRect", readerRef);
+        var offsetX = e.ClientX - clientRect.Left;
+        var offsetY = e.ClientY - clientRect.Top;
+        var percentX = offsetX / pageWidth;
+
+        Console.WriteLine($"{offsetX},{offsetY} {percentX}%");
         
-        if (pageHeight - e.ClientY <= 30) {
+        if (pageHeight - offsetY <= 30) {
             // Handle scrubbing
             page = (int)Math.Round((pageCount - 1) * percentX);
             page = Math.Max(0, Math.Min(pageCount - 1, page));
@@ -315,8 +323,8 @@
         try
         {
             // Make requests
-            var getTextTaask = Http.GetStringAsync($"/api/content/text/{ContentId}");
-            var getContentTask = Http.GetFromJsonAsync<Content>($"/api/content/{ContentId}");
+            var getTextTaask = httpClient.GetStringAsync($"/api/content/text/{ContentId}");
+            var getContentTask = httpClient.GetFromJsonAsync<Content>($"/api/content/{ContentId}");
             await Task.WhenAll(getTextTaask, getContentTask);
 
             text = getTextTaask.Result;
