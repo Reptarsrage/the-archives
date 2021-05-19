@@ -75,6 +75,10 @@
   margin-right: 10px;
 }
 
+.search-stats {
+  color: #888;
+}
+
 @media (min-width: 932px) {
   .header,
   .main {

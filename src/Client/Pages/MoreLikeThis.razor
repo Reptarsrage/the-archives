@@ -10,6 +10,11 @@
 
 <header class="header">
     <h1>More like this</h1>
+
+    @if (!loading)
+    {
+        <span class="search-stats">@total.ToString("N0") results in @(timeTaken.ToString("N0"))ms</span>
+    }
 </header>
 
 <main class="main">
@@ -46,7 +51,7 @@
     </div>
 
     @* Pagination *@
-    <div class="pager">
+    <div class="pager fade @(!fetched ? "hidden" : "shown")">
         @if (Page > 5)
         {
             <a href="/more/@ContentId" class="page"><i class="la la-angle-double-left"></i></a>
@@ -61,10 +66,10 @@
             var elasticLimit = 10_000;
             var totalPossible = Math.Min(elasticLimit, total);
             var maxPage = (int)Math.Ceiling(totalPossible / (double)pageSize);
-            var minPage = Math.Max(1, Math.Min(maxPage - 6, Page - 3));
+            var minPage = Math.Max(1, Math.Min(maxPage - 9, Page - 4));
         }
 
-        @for (var i = minPage; i < Math.Min(maxPage + 1, minPage + 7); i++)
+        @for (var i = minPage; i < Math.Min(maxPage + 1, minPage + 10); i++)
         {
             if (Page + 1 == i)
             {
@@ -78,7 +83,7 @@
 
         @if (Page < maxPage - 1)
         {
-            <a href="/more/@ContentId/@(Page + 1)/" class="page"><i class="la la-angle-right"></i></a>
+            <a href="/more/@ContentId/@(Page + 1)" class="page"><i class="la la-angle-right"></i></a>
         }
     </div>
 </main>
@@ -93,17 +98,34 @@
 
     private int pageSize { get; set; } = 10;
 
+    private long timeTaken { get; set; } = 0;
+
     private long total { get; set; }
 
     private IEnumerable<Content> results { get; set; } = Enumerable.Empty<Content>();
 
     private bool fetched { get; set; } = false;
 
+    private int page { get; set; } = 0;
+
     private bool fetching { get; set; } = false;
 
     private bool loading => !fetched || fetching;
 
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Page != page) {
+            await GetSearch();
+        }
+    }
+
     protected async override Task OnInitializedAsync()
+    {
+        await GetSearch();
+    }
+
+    private async Task GetSearch()
     {
         try
         {
@@ -126,6 +148,8 @@
                 fetching = false;
                 fetched = true;
                 total = response.Total;
+                timeTaken = response.TimeTaken;
+                page = response.Page;
             }
         }
         catch (AccessTokenNotAvailableException exception)
