@@ -72,5 +72,13 @@
 }
 
 .end {
-  margin-top: 2rem;
+  margin: auto;
+  text-align: center;
+  margin-top: 90px;
+}
+
+.see-more {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
 }
