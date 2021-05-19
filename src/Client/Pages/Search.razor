@@ -74,7 +74,7 @@
     </div>
 
     @* Pagination *@
-    <div class="pager">
+    <div class="pager fade @(!fetched ? "hidden" : "shown")">
         @if (Page > 5)
         {
             <a href="/Search/@queryString" class="page"><i class="la la-angle-double-left"></i></a>

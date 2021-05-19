@@ -17,32 +17,35 @@
         <h1><i class="la la-book"></i> The Archives</h1>
     </div>
 
-    <SearchInput Value=@searchValue ValueChanged="HandleSearchInput" OnSubmitCallback="HandleSubmit">
-        <SearchStats>
-            @if (contentCount > 0)
-            {
-                <span class="mr-1"><i class="la la-book"></i> @contentCount.ToString("N0") stories</span>
-            }
-
-            @if (tagsCount > 0)
-            {
-                <span class="mr-1"><i class="la la-tags"></i> @tagsCount.ToString("N0") tags</span>
-            }
-
-            @if (authorsCount > 0)
-            {
-                <span class="mr-1"><i class="la la-user"></i> @authorsCount.ToString("N0") authors</span>
-            }   
-            
-            @if (brandsCount > 0)
-            {
-                <span class="mr-1"><i class="la la-globe"></i> @brandsCount.ToString("N0") sources</span>
-            }
-
-            <span><i class="la la-otter"></i> 1 playful otter</span>
-        </SearchStats>
-    </SearchInput>
+    <SearchInput Value=@searchValue ValueChanged="HandleSearchInput" OnSubmitCallback="HandleSubmit" />
 </main>
+
+<footer class="footer">
+    @if (contentCount > 0)
+    {
+        <span class="mr-1"><i class="la la-book"></i> @contentCount.ToString("N0") stories</span>
+    }
+
+    @if (tagsCount > 0)
+    {
+        <span class="mr-1"><i class="la la-tags"></i> @tagsCount.ToString("N0") tags</span>
+    }
+
+    @if (authorsCount > 0)
+    {
+        <span class="mr-1"><i class="la la-user"></i> @authorsCount.ToString("N0") authors</span>
+    }   
+    
+    @if (brandsCount > 0)
+    {
+        <span class="mr-1"><i class="la la-globe"></i> @brandsCount.ToString("N0") sources</span>
+    }
+
+    @if(contentCount > 0 && tagsCount > 0 && authorsCount > 0 && brandsCount > 0)
+    {
+        <span><i class="la la-otter"></i> 1 playful otter</span>
+    }
+</footer>
 
 @code {
     private string searchValue { get; set; } = string.Empty;
