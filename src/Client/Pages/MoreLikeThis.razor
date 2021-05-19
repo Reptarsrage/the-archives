@@ -9,13 +9,36 @@
 @inject HttpClient Http
 
 <header class="header">
-    <h1>More like this</h1>
+    <div class="header-top">
+        <a class="nav-logo nav-link" href="/">
+            <i class="las la-book" /> The Archives
+        </a>
 
-    @if (!loading)
-    {
-        <span class="search-stats">@total.ToString("N0") results in @(timeTaken.ToString("N0"))ms</span>
-    }
+        <span class="header-auth">
+            <NavMenu />
+        </span>
+    </div>
+
+    <div class="header-bottom">
+        <a class="nav-logo nav-link" href="/">
+            <i class="las la-book" /> The Archives
+        </a>
+
+        <div class="title-wrapper">
+            <h1 class="title">More like this</h1>
+
+            @if (!loading)
+            {
+                <span class="search-stats">@total.ToString("N0") results in @(timeTaken.ToString("N0"))ms</span>
+            }
+        </div>
+
+        <span class="header-auth">
+            <NavMenu />
+        </span>
+    </div>
 </header>
+
 
 <main class="main">
     <Loader Loading=@loading />
