@@ -4,11 +4,11 @@
   "libraries": [
     {
       "library": "line-awesome@1.3.0",
-      "destination": "wwwroot\\lib\\line-awesome"
+      "destination": "wwwroot/lib/line-awesome"
     },
     {
       "library": "normalize@8.0.1",
-      "destination": "wwwroot\\lib\\normalize"
+      "destination": "wwwroot/lib/normalize"
     }
   ]
 }

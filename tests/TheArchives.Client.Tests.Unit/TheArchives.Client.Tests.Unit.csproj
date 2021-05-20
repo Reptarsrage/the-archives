@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Client\TheArchives.Client.csproj" />
+    <ProjectReference Include="../../src/Client/TheArchives.Client.csproj" />
   </ItemGroup>
 
 </Project>
