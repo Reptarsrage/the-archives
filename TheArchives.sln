@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31220.234
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheArchives.Client", "src\Client\TheArchives.Client.csproj", "{88377987-E949-43F2-A0D2-7926525F06BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheArchives.Client", "src/Client/TheArchives.Client.csproj", "{88377987-E949-43F2-A0D2-7926525F06BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheArchives.Server", "src\Server\TheArchives.Server.csproj", "{75BC82E8-C6F2-484E-9CC3-DC5A09517ED7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheArchives.Server", "src/Server/TheArchives.Server.csproj", "{75BC82E8-C6F2-484E-9CC3-DC5A09517ED7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheArchives.Shared", "src\Shared\TheArchives.Shared.csproj", "{58F10E93-5D1B-43B7-856B-389854CA1944}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheArchives.Shared", "src/Shared/TheArchives.Shared.csproj", "{58F10E93-5D1B-43B7-856B-389854CA1944}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9E548007-6900-4052-BA8E-22C9BC3DFA1D}"
 EndProject
@@ -23,11 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		renovate.json = renovate.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheArchives.Server.Tests.Unit", "tests\TheArchives.Server.Tests.Unit\TheArchives.Server.Tests.Unit.csproj", "{D1E13A82-2F12-447C-82C0-2DB90AE10B21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheArchives.Server.Tests.Unit", "tests/TheArchives.Server.Tests.Unit/TheArchives.Server.Tests.Unit.csproj", "{D1E13A82-2F12-447C-82C0-2DB90AE10B21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheArchives.Server.Tests.Integration", "tests\TheArchives.Server.Tests.Integration\TheArchives.Server.Tests.Integration.csproj", "{93774E22-2511-41A1-97BF-B07C387F2548}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheArchives.Server.Tests.Integration", "tests/TheArchives.Server.Tests.Integration/TheArchives.Server.Tests.Integration.csproj", "{93774E22-2511-41A1-97BF-B07C387F2548}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheArchives.Client.Tests.Unit", "tests\TheArchives.Client.Tests.Unit\TheArchives.Client.Tests.Unit.csproj", "{9EA97170-F03E-4F20-AEA7-628A4F7FA94F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheArchives.Client.Tests.Unit", "tests/TheArchives.Client.Tests.Unit/TheArchives.Client.Tests.Unit.csproj", "{9EA97170-F03E-4F20-AEA7-628A4F7FA94F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
