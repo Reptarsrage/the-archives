@@ -97,6 +97,8 @@
 
     private double yDown { get; set; } = double.MinValue;
 
+    private DateTime lastEvent { get; set; } = DateTime.MinValue;
+
     public async ValueTask DisposeAsync()
     {
         // If we don't run them all at once, we risk the element references being disposed in the meantime
@@ -200,7 +202,18 @@
             return;
         }
 
-        if (pageHeight - clientY <= 30) {
+        // throttle
+        if (DateTime.Now - lastEvent <= TimeSpan.FromMilliseconds(500)) {
+            return;
+        }
+
+        lastEvent = DateTime.Now;
+        var xUp = clientX;
+        var yUp = clientY;
+        var xDiff = xDown - xUp;
+        var yDiff = yDown - yUp;
+
+        if (pageHeight - clientY <= 30 && xDiff > 0) {
             // Handle scrubbing
             var percent = clientX / pageWidth;
             page = (int)Math.Round((pageCount - 1) * percent);
@@ -208,12 +221,6 @@
             StateHasChanged();
             return;
         }
-
-        var xUp = clientX;
-        var yUp = clientY;
-
-        var xDiff = xDown - xUp;
-        var yDiff = yDown - yUp;
 
         if (Math.Abs(xDiff) > Math.Abs(yDiff))
         {
