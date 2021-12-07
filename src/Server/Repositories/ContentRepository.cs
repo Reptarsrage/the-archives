@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using TheArchives.Server.Data;
 using TheArchives.Server.Models.Dto;
 
@@ -42,7 +38,7 @@ namespace TheArchives.Server.Repositories
 
         public async Task<long> CountTagsAsync(CancellationToken cancellationToken = default)
             => await _dbContext.Tags!.CountAsync(cancellationToken);
-        
+
         public async Task<long> CountBrandsAsync(CancellationToken cancellationToken = default)
             => await _dbContext.Content!
             .Select(c => c.Brand)

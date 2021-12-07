@@ -1,6 +1,5 @@
 ﻿
 using AutoMapper;
-using System.Linq;
 using DTO = TheArchives.Server.Models.Dto;
 using ES = TheArchives.Server.Models.Elastic;
 using SHARE = TheArchives.Shared;
@@ -23,7 +22,7 @@ namespace TheArchives.Server.MappingProfiles
                 .ForMember(dest => dest.Tags,
                     opt => opt.MapFrom(src => src.Tags!.Select(tag => tag.Label)))
                 .ForMember(dest => dest.Keywords,
-                    opt => opt.MapFrom(src => 
+                    opt => opt.MapFrom(src =>
                         src.Keywords!.Split(' ', System.StringSplitOptions.RemoveEmptyEntries)));
         }
     }

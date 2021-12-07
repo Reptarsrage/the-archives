@@ -1,10 +1,5 @@
 ﻿using Elasticsearch.Net;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Nest;
-using System;
 using TheArchives.Server.Models.Elastic;
 
 namespace TheArchives.Server.Extensions

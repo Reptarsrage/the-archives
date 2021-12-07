@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TheArchives.Server.Models.Elastic
+﻿namespace TheArchives.Server.Models.Elastic
 {
     public class Content
     {

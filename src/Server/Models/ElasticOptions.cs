@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TheArchives.Server.Models
+﻿namespace TheArchives.Server.Models
 {
     public class ElasticOptions
     {

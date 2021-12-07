@@ -2,7 +2,7 @@ name: Test
 
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
 
@@ -15,7 +15,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.0.100-preview.3.21202.5
+          dotnet-version: '6.0.x'
 
       - name: Test
         run: dotnet test -v n

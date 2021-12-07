@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace TheArchives.Server.Tests.Integration
 {
-    public class CustomWebApplicationFactory : WebApplicationFactory<Startup>
+    public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {

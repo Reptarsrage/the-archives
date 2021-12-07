@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using Nest;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using TheArchives.Server.Extensions;
 using TheArchives.Server.Models;
 using TheArchives.Server.Models.Elastic;

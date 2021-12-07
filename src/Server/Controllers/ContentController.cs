@@ -2,13 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using TheArchives.Server.Models;
 using TheArchives.Server.Repositories;
 using TheArchives.Shared;

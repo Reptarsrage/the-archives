@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace TheArchives.Server.HostedServices
+﻿namespace TheArchives.Server.HostedServices
 {
     /// <summary>
     /// In chare of ensuring Elastic is up-to-date on startup

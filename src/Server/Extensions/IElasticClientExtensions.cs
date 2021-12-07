@@ -1,6 +1,4 @@
 ﻿using Nest;
-using System.Threading;
-using System.Threading.Tasks;
 using TheArchives.Server.Models.Elastic;
 
 namespace TheArchives.Server.Extensions

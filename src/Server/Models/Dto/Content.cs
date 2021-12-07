@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TheArchives.Server.Models.Dto
+﻿namespace TheArchives.Server.Models.Dto
 {
     public class Content
     {
