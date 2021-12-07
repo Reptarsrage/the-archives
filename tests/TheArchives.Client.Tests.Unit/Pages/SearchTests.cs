@@ -1,10 +1,14 @@
-﻿using Bunit;
-using Bunit.TestDoubles;
-using RichardSzalay.MockHttp;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using Bunit;
+using Bunit.TestDoubles;
+
+using RichardSzalay.MockHttp;
+
 using TheArchives.Client.Tests.Unit.Extensions;
 using TheArchives.Shared;
+
 using Xunit;
 
 namespace TheArchives.Client.Tests.Unit.Pages

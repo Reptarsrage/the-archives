@@ -1,6 +1,8 @@
 using Bunit;
 using Bunit.TestDoubles;
+
 using TheArchives.Client.Shared;
+
 using Xunit;
 
 namespace TheArchives.Client.Tests.Unit.Shared

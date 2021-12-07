@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+﻿using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.JSInterop;
+
 using Moq;
-using System.Threading.Tasks;
 
 namespace TheArchives.Client.Tests.Unit.Mocks
 {

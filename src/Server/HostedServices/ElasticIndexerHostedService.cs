@@ -20,7 +20,8 @@
 
             // Ignore if testing
             var environment = serviceScope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-            if (!environment.IsEnvironment("Testing")) {
+            if (!environment.IsEnvironment("Testing"))
+            {
                 // Make sure all content is indexed
                 var elasticIndexer = serviceScope.ServiceProvider.GetRequiredService<IElasticIndexer>();
                 elasticIndexer.IndexAsnyc(cancellationToken); // Fire and forget
@@ -32,7 +33,8 @@
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            if (serviceScope != null) {
+            if (serviceScope != null)
+            {
                 serviceScope.Dispose();
                 serviceScope = null;
             }

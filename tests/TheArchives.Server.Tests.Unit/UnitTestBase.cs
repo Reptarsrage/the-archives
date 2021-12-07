@@ -1,6 +1,7 @@
-using Moq;
 using System;
 using System.Collections.Generic;
+
+using Moq;
 
 namespace TheArchives.Server.Tests.Unit
 {
@@ -15,7 +16,8 @@ namespace TheArchives.Server.Tests.Unit
 
         protected Mock<T> The<T>() where T : class
         {
-            if (!_the.ContainsKey(typeof(T))) {
+            if (!_the.ContainsKey(typeof(T)))
+            {
                 _the[typeof(T)] = new Mock<T>();
             }
 
@@ -24,7 +26,8 @@ namespace TheArchives.Server.Tests.Unit
 
         protected void VerifyAll()
         {
-            foreach (var mockedType in _the.Keys) {
+            foreach (var mockedType in _the.Keys)
+            {
                 _the[mockedType].VerifyAll();
             }
         }

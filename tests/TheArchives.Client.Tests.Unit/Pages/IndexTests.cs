@@ -1,7 +1,10 @@
 ﻿using Bunit;
 using Bunit.TestDoubles;
+
 using RichardSzalay.MockHttp;
+
 using TheArchives.Client.Tests.Unit.Extensions;
+
 using Xunit;
 
 namespace TheArchives.Client.Tests.Unit.Pages

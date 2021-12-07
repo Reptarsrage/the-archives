@@ -1,13 +1,17 @@
-﻿using Bunit;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.Extensions.DependencyInjection;
-using RichardSzalay.MockHttp;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+
+using Bunit;
+
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.Extensions.DependencyInjection;
+
+using RichardSzalay.MockHttp;
+
 using TheArchives.Client.Tests.Unit.Mocks;
 
 namespace TheArchives.Client.Tests.Unit.Extensions

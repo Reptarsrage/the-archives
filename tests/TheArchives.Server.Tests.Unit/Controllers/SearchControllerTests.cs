@@ -1,14 +1,20 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+
 using Moq;
+
 using Nest;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+
 using TheArchives.Server.Controllers;
 using TheArchives.Server.Repositories;
+
 using Xunit;
 
 namespace TheArchives.Server.Tests.Unit.Controllers

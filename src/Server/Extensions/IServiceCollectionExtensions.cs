@@ -1,5 +1,7 @@
 ﻿using Elasticsearch.Net;
+
 using Nest;
+
 using TheArchives.Server.Models.Elastic;
 
 namespace TheArchives.Server.Extensions
@@ -11,7 +13,8 @@ namespace TheArchives.Server.Extensions
         /// </summary>
         public static IServiceCollection AddElasticsearch(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
-            if (webHostEnvironment.IsEnvironment("Testing")) {
+            if (webHostEnvironment.IsEnvironment("Testing"))
+            {
                 return services;
             }
 

@@ -1,10 +1,15 @@
-﻿using Bunit;
+﻿using System;
+
+using Bunit;
 using Bunit.TestDoubles;
+
 using Microsoft.AspNetCore.Components;
+
 using RichardSzalay.MockHttp;
-using System;
+
 using TheArchives.Client.Tests.Unit.Extensions;
 using TheArchives.Shared;
+
 using Xunit;
 
 namespace TheArchives.Client.Tests.Unit.Pages

@@ -1,9 +1,12 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel.DataAnnotations;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using System.ComponentModel.DataAnnotations;
+
 using TheArchives.Server.Models;
 using TheArchives.Server.Repositories;
 using TheArchives.Shared;
@@ -45,7 +48,8 @@ namespace TheArchives.Server.Controllers
                 return await _contentRepository.GetAsync(contentId, cancellationToken);
             });
 
-            if (contentDto == null) {
+            if (contentDto == null)
+            {
                 return NotFound();
             }
 
@@ -69,7 +73,8 @@ namespace TheArchives.Server.Controllers
                 return await _contentRepository.GetAsync(contentId, cancellationToken);
             });
 
-            if (contentDto == null) {
+            if (contentDto == null)
+            {
                 return NotFound();
             }
 

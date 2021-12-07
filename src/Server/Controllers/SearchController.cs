@@ -1,8 +1,11 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel.DataAnnotations;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System.ComponentModel.DataAnnotations;
+
 using TheArchives.Server.Repositories;
 using TheArchives.Shared;
 
@@ -36,7 +39,8 @@ namespace TheArchives.Server.Controllers
             var search = request.Search ?? string.Empty;
 
             var response = await _searchRepository.SearchAsync(page, pageSize, search, seed, cancellationToken);
-            if (!response.IsValid) {
+            if (!response.IsValid)
+            {
                 _logger.LogWarning("Failed to get search results for {Seed}", seed);
                 return StatusCode(500, "Failed to get search results");
             }
@@ -59,7 +63,8 @@ namespace TheArchives.Server.Controllers
                 return await _searchRepository.MoreLikeThisAsync(contentId, page, pageSize, cancellationToken);
             });
 
-            if (!response.IsValid) {
+            if (!response.IsValid)
+            {
                 _logger.LogWarning("Failed to get related for {ContentId}", contentId);
                 return StatusCode(500, "Failed to get related content");
             }

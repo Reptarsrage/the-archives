@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
+
 using Nest;
+
 using TheArchives.Server.Extensions;
 using TheArchives.Server.Models;
 using TheArchives.Server.Models.Elastic;
@@ -96,7 +98,8 @@ namespace TheArchives.Server.Repositories
         public async Task<ISearchResponse<Content>> SearchAsync(int page, int pageSize, string searchRequest, int seed, CancellationToken cancellationToken = default)
         {
             // Search
-            if (!string.IsNullOrEmpty(searchRequest)) {
+            if (!string.IsNullOrEmpty(searchRequest))
+            {
                 return await _elasticClient.SearchAsync<Content>(s => s
                    .TrackTotalHits()
                    .Query(q => q.QueryString(d => d.Query(searchRequest)))

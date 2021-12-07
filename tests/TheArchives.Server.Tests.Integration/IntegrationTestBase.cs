@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+using Moq;
+
 using TheArchives.Server.Repositories;
+
 using Xunit;
 
 namespace TheArchives.Server.Tests.Integration
@@ -63,7 +67,8 @@ namespace TheArchives.Server.Tests.Integration
 
         protected Mock<T> The<T>() where T : class
         {
-            if (!_the.ContainsKey(typeof(T))) {
+            if (!_the.ContainsKey(typeof(T)))
+            {
                 _the[typeof(T)] = new Mock<T>();
             }
 
@@ -72,7 +77,8 @@ namespace TheArchives.Server.Tests.Integration
 
         protected void VerifyAll()
         {
-            foreach (var mockedType in _the.Keys) {
+            foreach (var mockedType in _the.Keys)
+            {
                 _the[mockedType].VerifyAll();
             }
         }
@@ -86,10 +92,12 @@ namespace TheArchives.Server.Tests.Integration
         protected StringContent SerializeRequest<T>(T request)
         {
             string content;
-            if (request is string) {
+            if (request is string)
+            {
                 content = (request as string)!;
             }
-            else {
+            else
+            {
                 content = JsonSerializer.Serialize(request);
             }
 

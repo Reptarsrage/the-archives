@@ -1,4 +1,5 @@
 ﻿using Nest;
+
 using TheArchives.Server.Models.Elastic;
 
 namespace TheArchives.Server.Extensions

@@ -8,7 +8,8 @@ namespace TheArchives.Server.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "Content",
-                columns: table => new {
+                columns: table => new
+                {
                     ContentId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Brand = table.Column<string>(type: "TEXT", nullable: false),
@@ -26,7 +27,8 @@ namespace TheArchives.Server.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Tags",
-                columns: table => new {
+                columns: table => new
+                {
                     TagId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Label = table.Column<string>(type: "TEXT", nullable: false),
@@ -39,7 +41,8 @@ namespace TheArchives.Server.Migrations
 
             migrationBuilder.CreateTable(
                 name: "ContentTag",
-                columns: table => new {
+                columns: table => new
+                {
                     ContentId = table.Column<int>(type: "INTEGER", nullable: false),
                     TagId = table.Column<int>(type: "INTEGER", nullable: false)
                 },

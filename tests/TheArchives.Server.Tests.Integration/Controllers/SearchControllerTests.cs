@@ -1,9 +1,12 @@
-﻿using Moq;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Moq;
+
 using TheArchives.Server.Repositories;
+
 using Xunit;
 
 namespace TheArchives.Server.Tests.Integration.Controllers
@@ -24,7 +27,8 @@ namespace TheArchives.Server.Tests.Integration.Controllers
             var expectedPage = 0;
             var expectedPageSize = 20;
             var expectedSearch = string.Empty;
-            var expectedDocs = Enumerable.Range(0, expectedTotal).Select(i => new Models.Elastic.Content {
+            var expectedDocs = Enumerable.Range(0, expectedTotal).Select(i => new Models.Elastic.Content
+            {
                 ContentId = i,
                 Title = $"CONTENT #{i}"
             }).ToArray();
@@ -61,7 +65,8 @@ namespace TheArchives.Server.Tests.Integration.Controllers
             var expectedTook = 0xdead;
             var expectedPage = 0;
             var expectedPageSize = 20;
-            var expectedDocs = Enumerable.Range(0, expectedTotal).Select(i => new Models.Elastic.Content {
+            var expectedDocs = Enumerable.Range(0, expectedTotal).Select(i => new Models.Elastic.Content
+            {
                 ContentId = i,
                 Title = $"CONTENT #{i}"
             }).ToArray();

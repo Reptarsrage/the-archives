@@ -1,10 +1,13 @@
-﻿using Moq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Moq;
+
 using TheArchives.Server.Repositories;
+
 using Xunit;
 
 namespace TheArchives.Server.Tests.Integration.Controllers
@@ -20,7 +23,8 @@ namespace TheArchives.Server.Tests.Integration.Controllers
         protected override IDictionary<string, string> ConfigureConfiguration()
         {
             // Override this to inject any necessary test-specific configuration variables
-            return new Dictionary<string, string> {
+            return new Dictionary<string, string>
+            {
                 ["Content:BaseDir"] = BaseDir,
             };
         }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+
 using TheArchives.Server.Repositories;
 
 namespace TheArchives.Server.HostedServices
@@ -29,19 +30,23 @@ namespace TheArchives.Server.HostedServices
         {
             await Sync.WaitAsync(cancellationToken);
 
-            try {
-                if (!await _searchRepository.IndexExistsAsync(cancellationToken)) {
+            try
+            {
+                if (!await _searchRepository.IndexExistsAsync(cancellationToken))
+                {
                     _logger.LogInformation("Creating Elastic index");
                     await _searchRepository.CreateIndexAsync(cancellationToken);
                 }
 
                 var expectedCount = await _contentRepository.CountAsync(cancellationToken);
                 var actualCount = await _searchRepository.CountAsync(cancellationToken);
-                if (expectedCount != actualCount) {
+                if (expectedCount != actualCount)
+                {
                     var count = 0;
                     var page = 1;
                     var pageSize = 1000;
-                    while (count < expectedCount) {
+                    while (count < expectedCount)
+                    {
                         _logger.LogInformation("Indexing elastic documents {Count} / {Total}", count, expectedCount);
                         var docs = await _contentRepository.ListAsync(page++, pageSize, cancellationToken);
                         await _searchRepository.IndexAsync(docs.Select(_mapper.Map<Models.Elastic.Content>), cancellationToken);
@@ -51,7 +56,8 @@ namespace TheArchives.Server.HostedServices
 
                 _logger.LogInformation("Elastic index is up to date");
             }
-            finally {
+            finally
+            {
                 Sync.Release();
             }
         }

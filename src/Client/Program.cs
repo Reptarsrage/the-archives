@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
 using TheArchives.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
